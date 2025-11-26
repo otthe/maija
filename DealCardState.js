@@ -1,0 +1,93 @@
+import { eq, config, odex } from "./game.js";
+import { State } from "./State.js";
+import { PlayTurnState } from "./PlayTurnState.js";
+import Player from "./Player.js";
+import { DealAnimation } from "./DealAnimation.js";
+import { CardUtil } from "./CardUtil.js";
+
+function dealInitialCards(players, deck, animations ) {
+  let fulfilled = [];
+
+  let queuedAnimations = [];
+  while(fulfilled.length < players.length && deck.length > 0) {
+    for (let i = 0; i < players.length; i++) {
+      const p = players[i];
+      if (!fulfilled.includes(p.position) && deck.length > 0) {
+        //animations.push(new DealAnimation(Math.floor(config.width/2), Math.floor(config.height/2), p.x , p.y));
+        const card = CardUtil.draw(deck)
+
+        queuedAnimations.push({
+          sx: Math.floor(config.width/2),
+          sy: Math.floor(config.height/2),
+          dx: p.x,
+          dy: p.y,
+          card: card
+        });
+
+        p.hand.push(card);
+        if (p.hand.length >= 5 || deck.length<= 0) {
+          fulfilled.push(p.position);
+        }
+      }
+    }
+  }
+
+  console.log(queuedAnimations[0]);
+  console.log(queuedAnimations[1]);
+
+
+  return queuedAnimations;
+}
+
+export class DealCardState extends State {
+  constructor(game, initialDeal=false) {
+    super();
+    this.game = game;
+    this.done = false;
+
+    this.initialDeal = initialDeal;
+  
+    this.queuedAnimations = null;
+  }
+
+  enter() {
+    console.log("[DealCardState]");
+    if (this.initialDeal) {
+      this.queuedAnimations = dealInitialCards(this.game.players, this.game.deck, this.game.animations);
+      console.log(this.game.players);
+      console.log(this.game.animations);
+    }
+
+
+  }
+  update(dt) {
+    if (eq.isIdle() && !this.done) {
+      //eq.emit({ type: "WAIT", ms: 200 });
+
+      // deal five cards to all players if initial
+
+      if (this.initialDeal) {
+        if (this.queuedAnimations && this.queuedAnimations.length > 0) {
+          const animation = this.queuedAnimations.shift();
+          eq.emit({ type: "WAIT", ms: 100});
+          eq.emit({type: "DEAL_CARD", animation: animation});
+        } else {
+          this.done = true;
+        }
+      }
+    }
+  }
+
+  exit() {
+
+  }
+
+  isFinished(){
+    return this.done;
+  }
+
+  nextState() {
+    return new PlayTurnState();
+  }
+
+}
