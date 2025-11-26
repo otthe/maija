@@ -1,6 +1,6 @@
 import { odex, config } from "./game.js";
 
-export default class DealButton {
+export default class RaiseButton {
   constructor(game,x, y, w, h){
     this.game=game;
     this.x=x;
@@ -23,14 +23,12 @@ export default class DealButton {
   render() {
     if (this.active) {
       const player = this.game.players[0];
-      // this.layer.ctx.fillStyle = "brown";
-      // this.layer.ctx.fillRect(this.x, this.y, this.w, this.h);
- 
-      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 64, 48, 32, this.x, this.y, this.w, this.h);
-
+      this.layer.ctx.fillStyle = "gray";
+      this.layer.ctx.fillRect(this.x, this.y, this.w, this.h);
+    
       this.layer.ctx.fillStyle = "#000";
       const selectedCards = player.hand.filter((card) => card.selected);
-      this.layer.ctx.fillText(`Lyö ${selectedCards.length} korttia`,this.x, this.y+(this.h/2));
+      this.layer.ctx.fillText(`Nosta ${selectedCards.length} korttia`,this.x, this.y+(this.h/2));
     }
   }
 }

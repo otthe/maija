@@ -20,7 +20,9 @@ export const config = {
 
 export const odex = new Odex(config.width, config.height);
 
-const sprites = [];
+const sprites = [
+  {name: "spritesheet", src: '/art/spritesheet.png'}
+];
 const sounds = [];
 
 const gameContainer = document.getElementById('gameContainer');
@@ -202,6 +204,8 @@ document.addEventListener("DOMContentLoaded", async function() {
   //  gameObjects.update(dt)     ← movement, animations, physics
   //  render()                   ← draw everything
 
+  console.log(odex.getSprite("spritesheet"));
+
   odex.update((layers, deltaTime) => {
 
     deltaTime = deltaTime*1000;
@@ -317,6 +321,8 @@ document.addEventListener("DOMContentLoaded", async function() {
           eq.emit({ type: "SEND_MESSAGE", msg: "You need to select cards!"});
         }
       }
+
+      //if player is about to raise
     }
 
     console.log(`Click at (${gameData.mouseX}, ${gameData.mouseY})`);

@@ -43,8 +43,15 @@ export class Card {
   // }
 
   render() {
-    this.layer.ctx.fillStyle = "#fff";
-    this.layer.ctx.fillRect(this.x, this.y, this.w, this.h);
+    // this.layer.ctx.fillStyle = "#fff";
+    // this.layer.ctx.fillRect(this.x, this.y, this.w, this.h);
+
+
+    // drawImage(image, dx, dy)
+    // drawImage(image, dx, dy, dWidth, dHeight)
+    // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+
+    this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 0, 48, 64, this.x, this.y, config.cardWidth, config.cardHeight);
 
     this.layer.ctx.fillStyle = "#000";
     this.layer.ctx.fillText(this.suit, this.x, this.y+16);
