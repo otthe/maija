@@ -41,11 +41,6 @@ function dealInitialCards(players, deck, game ) {
       }
     }
   }
-
-  console.log(queuedAnimations[0]);
-  console.log(queuedAnimations[1]);
-
-
   return queuedAnimations;
 }
 
@@ -67,8 +62,6 @@ export class DealCardState extends State {
       console.log(this.game.players);
       console.log(this.game.animations);
     }
-
-
   }
   update(dt) {
     if (eq.isIdle() && !this.done) {
@@ -79,11 +72,14 @@ export class DealCardState extends State {
       if (this.initialDeal) {
         if (this.queuedAnimations && this.queuedAnimations.length > 0) {
           const animation = this.queuedAnimations.shift();
-          eq.emit({ type: "WAIT", ms: 50});
+          eq.emit({ type: "WAIT", ms: config.dealCardDelay}); //50
           eq.emit({type: "DEAL_CARD", animation: animation});
         } else {
           this.done = true;
         }
+      }else {
+        //check if last player has less than five cards
+        this.done = true;
       }
     }
   }
@@ -100,7 +96,10 @@ export class DealCardState extends State {
 
   nextState() {
     //return new PlayTurnState(this.game, this.game.turnPlayer);
-    return new PickTrumpCardState(this.game, this.game.turnPlayer);
+    if (this.initialDeal) {
+      return new PickTrumpCardState(this.game, this.game.turnPlayer);
+    }
+    return new PlayTurnState(this.game, this.game.turnPlayer);
   }
 
 }

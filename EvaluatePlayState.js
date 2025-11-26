@@ -1,3 +1,4 @@
+import { DealCardState } from "./DealCardState.js";
 import { eq, config, odex } from "./game.js";
 import { PlayTurnState } from "./PlayTurnState.js";
 import { State } from "./State.js";
@@ -27,7 +28,8 @@ export class EvaluatePlayState extends State {
   }
 
   nextState() {
-    return new PlayTurnState(this.game, this.game.turnPlayer);
+    //return new PlayTurnState(this.game, this.game.turnPlayer);
+    return new DealCardState(this.game, false);
   }
 
   exit() {

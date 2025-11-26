@@ -1,3 +1,5 @@
+import { Card } from "./Card.js";
+import { CardUtil } from "./CardUtil.js";
 import { odex, config } from "./game.js";
 
 function pickPosition(pos, sw, sh) {
@@ -81,6 +83,29 @@ export default class Player {
         c.update(dt);
       }
     }
+
+    // (new Card(
+    //   game,
+    //   card.rank,
+    //   card.suit,
+    //   card.value,
+    //   p.x,
+    //   p.y,
+    // ))
+
+    // while(this.hand.length < 5 && this.game.deck.length > 0) {
+    //   const card = CardUtil.draw(this.game.deck);
+    //   this.hand.push(
+    //     new Card(
+    //       this.game,
+    //       card.rank,
+    //       card.suit,
+    //       card.value,
+    //       this.x, 
+    //       this.y,
+    //     ) 
+    //   );
+    // }
   }
 
   render() {

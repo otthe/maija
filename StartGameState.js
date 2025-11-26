@@ -52,7 +52,7 @@ export class StartGameState extends State {
 
   update(dt) {
     if (eq.isIdle() && !this.done) {
-      eq.emit({ type: "WAIT", ms: 200 });
+      eq.emit({ type: "WAIT", ms: 50 }); //200
       eq.emit({type: "SPAWN_PLAYER", id: this.spawnedPlayerIndex});
 
       this.spawnedPlayerIndex++;

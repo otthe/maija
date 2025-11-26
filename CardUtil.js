@@ -40,7 +40,8 @@ export const CardUtil = {
   },
   
   draw(deck) {
-    return deck.pop();
+    //return deck.pop();
+    return deck.shift();
   }
    
 }

@@ -22,13 +22,16 @@ export class Deck {
       this.layer.ctx.fillText(str, this.x-(config.cardWidth/2), this.y-(config.cardHeight/2)-32);
     }
 
-    this.layer.ctx.fillStyle = "red";
-    this.layer.ctx.fillRect(this.x-(config.cardWidth/2), this.y-(config.cardHeight/2), config.cardWidth, config.cardHeight);
+    if (this.game.deck.length > 1) {
+      this.layer.ctx.fillStyle = "red";
+      this.layer.ctx.fillRect(this.x-(config.cardWidth/2), this.y-(config.cardHeight/2), config.cardWidth, config.cardHeight);
+  
+      this.layer.ctx.fillStyle = "#000";
+      this.layer.ctx.fillText(`${this.game.deck.length} cards`,this.x-(config.cardWidth/2), this.y-(config.cardHeight/2)+32 );
+      // for (let i  =0; i < this.game.deck.length; i++) {
+      //   this.layer.ctx.fillRect(this.x-(config.cardWidth/2)+i, this.y-(config.cardHeight/2)+i, config.cardWidth, config.cardHeight);
+      // }
+    }
 
-    this.layer.ctx.fillStyle = "#000";
-    this.layer.ctx.fillText(`${this.game.deck.length} cards`,this.x-(config.cardWidth/2), this.y-(config.cardHeight/2)+32 );
-    // for (let i  =0; i < this.game.deck.length; i++) {
-    //   this.layer.ctx.fillRect(this.x-(config.cardWidth/2)+i, this.y-(config.cardHeight/2)+i, config.cardWidth, config.cardHeight);
-    // }
   }
 }

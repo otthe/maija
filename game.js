@@ -1,3 +1,5 @@
+import { Card } from './Card.js';
+import { CardUtil } from './CardUtil.js';
 import { Collision } from './Collision.js';
 import { DealAnimation } from './DealAnimation.js';
 import DealButton from './DealButton.js';
@@ -13,6 +15,7 @@ export const config = {
   cardHeight: 96, //64
   slotWidth: 64,
   slotHeight: 96,
+  dealCardDelay: 1, //50
 }
 
 export const odex = new Odex(config.width, config.height);
@@ -169,6 +172,10 @@ function getCanvasMousePos(canvas, event) {
   };
 }
 
+function nextTurn() {
+  return gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;
+}
+
 document.addEventListener("DOMContentLoaded", async function() {
   await odex.init(sprites, sounds);
 
@@ -221,7 +228,8 @@ document.addEventListener("DOMContentLoaded", async function() {
   document.addEventListener("keyup", function(e) {
     if (e.code === "Space" && sm.current.constructor.name === "PlayTurnState") {
       //switch turn
-      gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;
+      //gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;
+      nextTurn();
     }
   });
 
@@ -242,9 +250,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     //players turn
     if (gameData.turnPlayer === 0) {
       const player = gameData.players[0];
-
+      const nextPlayer = gameData.players[(gameData.turnPlayer + 1) % gameData.players.length];
       const selectedCards = player.hand.filter((card) => card.selected);
-
       const mouseRect = {x:gameData.mouseX, y:gameData.mouseY, w:1, h:1};
 
       //is it colliding with player cards
@@ -263,11 +270,55 @@ document.addEventListener("DOMContentLoaded", async function() {
       const dealButton = gameData.dealButton;
       const dealButtonRect = {x: dealButton.x, y: dealButton.y, w: dealButton.w, h: dealButton.h};
       if (dealButton && dealButton.active && Collision.rect(mouseRect, dealButtonRect)) {
-        console.log("hello frm deal button!");
-        if (selectedCards.length > 0) console.log("You have selected some cards!");
+        if (selectedCards.length > 0) {
+          player.hand = player.hand.filter((card) => !card.selected);
+         // gameData.cardsToBeat = selectedCards;
+
+          selectedCards.forEach((card) => {
+            const animation = {
+              sx: card.x,
+              sy: card.y,
+              dx: nextPlayer.x,
+              dy: nextPlayer.y,
+              card: card
+            }
+
+            console.log(animation);
+
+            eq.emit({type: "WAIT", ms: config.dealCardDelay});
+            eq.emit({type: "DEAL_CARD", animation: animation });
+          });
+
+          while (player.hand.length < 5 && gameData.deck.length > 0 ){
+            const card = CardUtil.draw(gameData.deck);
+            player.hand.push(new Card(
+              player.game,
+              card.rank,
+              card.suit,
+              card.value,
+              player.x,
+              player.y
+            ));
+
+            const animation = {
+              sx: Math.floor(config.width/2),
+              sy: Math.floor(config.height/2),
+              dx: player.x,
+              dy: player.y,
+              card: card
+            }
+
+            eq.emit({type: "WAIT", ms: config.dealCardDelay});
+            eq.emit({type: "DEAL_CARD", animation: animation });
+          }
+
+          //nextTurn();
+        } else {
+          eq.emit({ type: "SEND_MESSAGE", msg: "You need to select cards!"});
+        }
       }
     }
 
-    console.log(`→ Click at (${gameData.mouseX}, ${gameData.mouseY})`);
+    console.log(`Click at (${gameData.mouseX}, ${gameData.mouseY})`);
   });
 });
