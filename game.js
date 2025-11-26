@@ -6,7 +6,11 @@ import { StateMachine } from './StateMachine.js';
 
 export const config = {
   width: 960,
-  height: 640
+  height: 640,
+  cardWidth: 64, //48
+  cardHeight: 96, //64
+  slotWidth: 64,
+  slotHeight: 96,
 }
 
 export const odex = new Odex(config.width, config.height);
@@ -38,22 +42,6 @@ const eventHandlers = {
     // WAIT logic is handled internally
   },
 
-  SPAWN_OBJECT: (ev) => {
-    objects.push({
-      x:Math.round(Math.random() * config.width),
-      y: 64,
-      tick() {
-        this.y++;
-        this.x++;
-      },
-      render() {
-        const ctx = odex.G.layers[1].ctx;
-        ctx.fillStyle = "red";
-        ctx.fillRect(this.x, this.y, 32, 32);
-      }
-    })
-  },
-
   SPAWN_PLAYER: (ev) => {
     const p = gameData.players[ev.id];
     p.isVisible = true;
@@ -69,8 +57,6 @@ const eventHandlers = {
   }
   
 };
-
-const objects = [];
 
 const gameData = {
   deck: [],
@@ -89,21 +75,21 @@ const gameData = {
 
 
 function updateBot(layer, dt) {
-  for (let i = 0; i < layer.objects; i++) {
+  for (let i = 0; i < layer.objects.length; i++) {
     const o = layer.objects[i];
     o.update(dt);
   }
 }
 
 function updateMid(layer, dt) {
-  for (let i = 0; i < layer.objects; i++) {
+  for (let i = 0; i < layer.objects.length; i++) {
     const o = layer.objects[i];
     o.update(dt);
   }
 }
 
 function updateTop(layer, dt) {
-  for (let i = 0; i < layer.objects; i++) {
+  for (let i = 0; i < layer.objects.length; i++) {
     const o = layer.objects[i];
     o.update(dt);
   }
@@ -118,7 +104,7 @@ function updateTop(layer, dt) {
 function renderBot(layer) {
   odex.clear(layer.ctx);
 
-  for (let i = 0; i < layer.objects; i++) {
+  for (let i = 0; i < layer.objects.length; i++) {
     const o = layer.objects[i];
     o.render();
   }
@@ -127,7 +113,7 @@ function renderBot(layer) {
 function renderMid(layer) {
   odex.clear(layer.ctx);
 
-  for (let i = 0; i < layer.objects; i++) {
+  for (let i = 0; i < layer.objects.length; i++) {
     const o = layer.objects[i];
     o.render();
   }
@@ -141,7 +127,7 @@ function renderMid(layer) {
 function renderTop(layer) {
   odex.clear(layer.ctx);
 
-  for (let i = 0; i < layer.objects; i++) {
+  for (let i = 0; i < layer.objects.length; i++) {
     const o = layer.objects[i];
     o.render();
   }
@@ -184,11 +170,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     sm.update(deltaTime);
     eq.update(deltaTime, eventHandlers);
 
-    for (let i = 0; i<objects.length; i++) {
-      const o = objects[i];
-      o.tick(deltaTime);
-    }
-
     updateBot(layers[0], deltaTime);
     updateMid(layers[1], deltaTime);
     updateTop(layers[2], deltaTime);
@@ -197,23 +178,19 @@ document.addEventListener("DOMContentLoaded", async function() {
   odex.render((layers) => {
     if (document.hidden) return;
 
-    for (let i = 0; i<objects.length; i++) {
-      const o = objects[i];
-      o.render();
-    }
-
     renderBot(layers[0]);
     renderMid(layers[1]);
     renderTop(layers[2]);
-    
+
     layers[2].ctx.fillStyle = "#fff";
     layers[2].ctx.fillText(sm.current.constructor.name, 32,32);
 
   });
 
   document.addEventListener("keyup", function(e) {
-    if (e.code === "Space") {
+    if (e.code === "Space" && sm.current.constructor.name === "PlayTurnState") {
       //switch turn
+      gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;
     }
   });
 });

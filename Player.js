@@ -38,18 +38,13 @@ function pickPosition(pos, sw, sh) {
 
 }
 
-const slotWidth = 64;
-const slotHeight = 96;
-
-const cardWidth = 48;
-const cardHeight = 64;
-
 export default class Player {
-  constructor(type, position) {
+  constructor(type, position, game) {
     this.type = type;
     this.position=position;
+    this.game = game;
   
-    const {x, y} = pickPosition(position,slotWidth, slotHeight);
+    const {x, y} = pickPosition(position,config.slotWidth, config.slotHeight);
 
     this.x = x;
     this.y = y;
@@ -61,6 +56,8 @@ export default class Player {
     this.hand = [];
 
     this.isVisible = false;
+
+    this.isVisibleCards = false;
   }
 
   update(dt) {
@@ -69,38 +66,37 @@ export default class Player {
 
   render() {
     if (!this.isVisible) return;
-    // if (gs.currentTurn===this.position) {
-    //   this.layer.ctx.fillStyle ="blue";
-    // } else {
-    //   this.layer.ctx.fillStyle = "red";
-    // }
+    if (this.game.turnPlayer===this.position) {
+      this.layer.ctx.fillStyle ="blue";
+    } else {
+      this.layer.ctx.fillStyle = "red";
+    }
 
-    this.layer.ctx.fillStyle = "red";
 
-    this.layer.ctx.fillRect(this.x, this.y, slotWidth, slotHeight);
+    this.layer.ctx.fillRect(this.x, this.y, config.slotWidth, config.slotHeight);
  
     this.layer.ctx.fillStyle = "#fff";
     this.layer.ctx.fillText(this.playerName, this.x, this.y);
  
-    /*if (this.type==="player") {
-      const middle = Math.floor(this.x + slotWidth/2);
+    if (this.type==="player" && this.isVisibleCards) {
+      const middle = Math.floor(this.x + config.slotWidth/2);
       const pad = 16;
-      const totalCardsLength = this.hand.length*(pad+cardWidth);
+      const totalCardsLength = this.hand.length*(pad+config.cardWidth);
       const sx = Math.floor(middle-(totalCardsLength/2));  
       
       for (let i = 0; i < this.hand.length; i++) {
         const c = this.hand[i];
 
         this.layer.ctx.fillStyle = "#fff";
-        const cx = sx+(i*(pad+cardWidth));
-        const cy = Math.floor(this.y-slotHeight/2);
-        this.layer.ctx.fillRect(cx, cy, cardWidth, cardHeight);
+        const cx = sx+(i*(pad+config.cardWidth));
+        const cy = Math.floor(this.y-config.slotHeight/2);
+        this.layer.ctx.fillRect(cx, cy, config.cardWidth, config.cardHeight);
 
         this.layer.ctx.fillStyle = "#000";
         this.layer.ctx.fillText(c.suit, cx, cy+16);
         this.layer.ctx.fillText(c.rank, cx, cy+32);
         this.layer.ctx.fillText(c.value, cx, cy+48);
       }
-    }*/
+    }
   }
 }

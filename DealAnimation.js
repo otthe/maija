@@ -1,7 +1,5 @@
 import { config, odex } from "./game.js";
 
-const cardWidth = 48;
-const cardHeight = 64;
 export class DealAnimation {
   constructor(startX, startY, destX, destY) {
     this.sx = startX;
@@ -44,11 +42,11 @@ export class DealAnimation {
 
     this.layer.ctx.save();
 
-    this.layer.ctx.translate(this.x + cardWidth / 2, this.y + cardHeight / 2);
+    this.layer.ctx.translate(this.x + config.cardWidth / 2, this.y + config.cardHeight / 2);
     this.layer.ctx.rotate(this.rotation);
 
     this.layer.ctx.fillStyle = "white";
-    this.layer.ctx.fillRect(-cardWidth / 2, -cardHeight / 2, cardWidth, cardHeight);
+    this.layer.ctx.fillRect(-config.cardWidth / 2, -config.cardHeight / 2, config.cardWidth, config.cardHeight);
 
     this.layer.ctx.restore();
   }

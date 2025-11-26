@@ -3,11 +3,10 @@ import { PlayTurnState } from "./PlayTurnState.js";
 import { State } from "./State.js";
 
 export class EvaluatePlayState extends State {
-  constructor() {
+  constructor(game) {
     super();
+    this.game=game;
     this.done = false;
-
-    this.spawned = 0;
   }
 
   enter() {
@@ -16,11 +15,10 @@ export class EvaluatePlayState extends State {
 
   update(dt) {
     if (eq.isIdle() && !this.done) {
-      eq.emit({ type: "WAIT", ms: 500 });
+      eq.emit({ type: "WAIT", ms: 100 });
       eq.emit({type: "SEND_MESSAGE", msg: "Evaluate cards played"});
       // state progression rules...
-      this.spawned++;
-      if (this.spawned>=4) this.done=true;
+      this.done=true;
     }
   }
 
@@ -29,7 +27,7 @@ export class EvaluatePlayState extends State {
   }
 
   nextState() {
-    return new PlayTurnState();
+    return new PlayTurnState(this.game, this.game.turnPlayer);
   }
 
   exit() {

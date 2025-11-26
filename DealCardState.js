@@ -69,7 +69,7 @@ export class DealCardState extends State {
       if (this.initialDeal) {
         if (this.queuedAnimations && this.queuedAnimations.length > 0) {
           const animation = this.queuedAnimations.shift();
-          eq.emit({ type: "WAIT", ms: 100});
+          eq.emit({ type: "WAIT", ms: 50});
           eq.emit({type: "DEAL_CARD", animation: animation});
         } else {
           this.done = true;
@@ -79,7 +79,9 @@ export class DealCardState extends State {
   }
 
   exit() {
-
+    if (this.initialDeal) {
+      this.game.players[0].isVisibleCards = true;
+    }
   }
 
   isFinished(){
@@ -87,7 +89,7 @@ export class DealCardState extends State {
   }
 
   nextState() {
-    return new PlayTurnState();
+    return new PlayTurnState(this.game, this.game.turnPlayer);
   }
 
 }

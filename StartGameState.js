@@ -4,13 +4,14 @@ import { PlayTurnState } from "./PlayTurnState.js";
 import Player from "./Player.js";
 import { CardUtil } from "./CardUtil.js";
 import { DealCardState } from "./DealCardState.js";
+import { Deck } from "./Deck.js";
 
-function addPlayers(amount=5) {
+function addPlayers(amount=5, game) {
   let players = [];
   for (let i = 0; i < amount; i++) {
     let type = "bot"
     if (i === 0) type = "player";
-    players.push(new Player(type, i));
+    players.push(new Player(type, i, game));
   }
   return players;
 }
@@ -28,7 +29,7 @@ export class StartGameState extends State {
   enter() {
     console.log("[StartGameState]");
     this.game.deck = CardUtil.shuffle(CardUtil.createDeck());
-    this.game.players = addPlayers(this.playerAmount);
+    this.game.players = addPlayers(this.playerAmount, this.game);
 
     this.game.table = [];
     this.game.round = 1;
@@ -38,6 +39,10 @@ export class StartGameState extends State {
     this.game.midObjects = odex.G.layers[1].objects;
     this.game.topObjects = odex.G.layers[2].objects;
     this.game.animations = [];
+
+    this.game.midObjects.push(new Deck(this.game));
+    console.log(this.game.midObjects);
+    console.log(odex.G.layers[1].objects);
   }
 
   update(dt) {
