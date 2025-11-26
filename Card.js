@@ -15,6 +15,8 @@ export class Card {
     this.layer = odex.G.layers[1];
 
     this.selected = false;
+  
+    this.active = false;
   }
 
   update(dt) {
@@ -23,6 +25,12 @@ export class Card {
     // if (Collision.rect(a, b)) {
     //   this.selected=true;
     // }
+    if (this.game.turnPlayer === 0) {
+      this.active = true;
+    } else {
+      this.active = false;
+      this.selected=false;
+    }
   }
   
   // render(x,y,w,h) {

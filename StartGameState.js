@@ -5,6 +5,7 @@ import Player from "./Player.js";
 import { CardUtil } from "./CardUtil.js";
 import { DealCardState } from "./DealCardState.js";
 import { Deck } from "./Deck.js";
+import DealButton from "./DealButton.js";
 
 function addPlayers(amount=5, game) {
   let players = [];
@@ -40,7 +41,11 @@ export class StartGameState extends State {
     this.game.topObjects = odex.G.layers[2].objects;
     this.game.animations = [];
 
+    this.game.trumpCardPicked=false;
+    this.game.cardsToBeat=[];
+
     this.game.midObjects.push(new Deck(this.game));
+    this.game.dealButton=new DealButton(this.game, config.width/2, config.height-64, 128, 64);
     console.log(this.game.midObjects);
     console.log(odex.G.layers[1].objects);
   }

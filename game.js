@@ -1,5 +1,6 @@
 import { Collision } from './Collision.js';
 import { DealAnimation } from './DealAnimation.js';
+import DealButton from './DealButton.js';
 import { EventQueue } from './EventQueue.js';
 import Odex from './odex.js';
 import { StartGameState } from './StartGameState.js';
@@ -55,7 +56,11 @@ const eventHandlers = {
 
   SEND_MESSAGE: (ev) => {
     console.log(ev.msg);
-  }
+  },
+
+  PICK_TRUMP_CARD: (ev) => {
+
+  },
   
 };
 
@@ -75,7 +80,10 @@ const gameData = {
 
   mouseX: 0,
   mouseY: 0,
-  clicked: false
+  clicked: false,
+
+  cardsToBeat: [],
+  trumpCardPicked: false,
 };
 
 
@@ -109,6 +117,9 @@ function updateTop(layer, dt) {
   animations.forEach((animation) => {
     animation.update(dt);
   });
+
+  gameData.dealButton.update(dt);
+
 }
 
 function renderBot(layer) {
@@ -146,6 +157,8 @@ function renderTop(layer) {
   animations.forEach((animation) => {
     animation.render();
   });
+
+  gameData.dealButton.render();
 }
 
 function getCanvasMousePos(canvas, event) {
@@ -226,23 +239,35 @@ document.addEventListener("DOMContentLoaded", async function() {
     gameData.mouseY = pos.y;
     gameData.clicked = true;
 
+    //players turn
     if (gameData.turnPlayer === 0) {
       const player = gameData.players[0];
 
+      const selectedCards = player.hand.filter((card) => card.selected);
+
+      const mouseRect = {x:gameData.mouseX, y:gameData.mouseY, w:1, h:1};
+
+      //is it colliding with player cards
       for (let i = 0; i < player.hand.length; i++) {
         const c = player.hand[i];
 
-        const a = {x:gameData.mouseX, y:gameData.mouseY, w:1, h:1};
-        const b = {x:c.x, y:c.y, w:c.w, h:c.h};
+        const cardRect = {x:c.x, y:c.y, w:c.w, h:c.h};
       
-        if (Collision.rect(a, b)) {
+        if (Collision.rect(mouseRect, cardRect)) {
           c.selected = !c.selected;
+          return;
         }
+      }
+
+      //if player is about to deal
+      const dealButton = gameData.dealButton;
+      const dealButtonRect = {x: dealButton.x, y: dealButton.y, w: dealButton.w, h: dealButton.h};
+      if (dealButton && dealButton.active && Collision.rect(mouseRect, dealButtonRect)) {
+        console.log("hello frm deal button!");
+        if (selectedCards.length > 0) console.log("You have selected some cards!");
       }
     }
 
-
-  
     console.log(`→ Click at (${gameData.mouseX}, ${gameData.mouseY})`);
   });
 });

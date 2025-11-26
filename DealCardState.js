@@ -7,7 +7,7 @@ import { CardUtil } from "./CardUtil.js";
 import { Card } from "./Card.js";
 import { PickTrumpCardState } from "./PickTrumpCardState.js";
 
-function dealInitialCards(players, deck, animations ) {
+function dealInitialCards(players, deck, game ) {
   let fulfilled = [];
 
   let queuedAnimations = [];
@@ -28,7 +28,7 @@ function dealInitialCards(players, deck, animations ) {
 
         //p.hand.push(card);
         p.hand.push(new Card(
-          card.game,
+          game,
           card.rank,
           card.suit,
           card.value,
@@ -63,7 +63,7 @@ export class DealCardState extends State {
   enter() {
     console.log("[DealCardState]");
     if (this.initialDeal) {
-      this.queuedAnimations = dealInitialCards(this.game.players, this.game.deck, this.game.animations);
+      this.queuedAnimations = dealInitialCards(this.game.players, this.game.deck, this.game);
       console.log(this.game.players);
       console.log(this.game.animations);
     }

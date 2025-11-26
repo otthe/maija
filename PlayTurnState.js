@@ -19,8 +19,12 @@ export class PlayTurnState extends State {
     if (eq.isIdle() && !this.done && !this.turnOver) {
       //eq.emit({ type: "WAIT", ms: 500 });
       eq.emit({type: "SEND_MESSAGE", msg: "Do the plays!"});
+      
+      if (this.game.cardsToBeat.length === 0) {
+        
+      }
+      
       // state progression rules..
-
       if (this.game.turnPlayer !== this.playerId) {
         this.turnOver=true;
       }

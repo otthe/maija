@@ -1,6 +1,6 @@
 export const CardUtil = {
   createDeck() {
-    const SUITS = ["♠", "♥", "♦", "♣"];
+    const SUITS = ["Spades", "Hearts", "Diamonds", "Clubs"];
     const RANKS = [
       { rank: "A", value: 11 },
       { rank: "2", value: 2 },

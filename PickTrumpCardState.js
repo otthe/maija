@@ -1,3 +1,4 @@
+import { CardUtil } from "./CardUtil.js";
 import { eq, config, odex } from "./game.js";
 import { PlayTurnState } from "./PlayTurnState.js";
 import { State } from "./State.js";
@@ -7,10 +8,15 @@ export class PickTrumpCardState extends State {
     super();
     this.game=game;
     this.done = false;
+    this.trumpCard = null;
   }
 
   enter() {
     console.log("[PickTrumpCardState]");
+
+    this.trumpCard = CardUtil.draw(this.game.deck);
+    console.log(this.trumpCard);
+    this.game.deck.push(this.trumpCard);
   }
 
   update(dt) {
@@ -20,7 +26,10 @@ export class PickTrumpCardState extends State {
       eq.emit({type: "PICK_TRUMP_CARD"});
 
       // state progression rules...
-      this.done=true;
+      if (this.trumpCard) {
+        this.done=true;
+        this.game.trumpCardPicked = true;
+      }
     }
   }
 
