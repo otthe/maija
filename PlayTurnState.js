@@ -17,7 +17,7 @@ export class PlayTurnState extends State {
 
   update(dt) {
     if (eq.isIdle() && !this.done && !this.turnOver) {
-      eq.emit({ type: "WAIT", ms: 500 });
+      //eq.emit({ type: "WAIT", ms: 500 });
       eq.emit({type: "SEND_MESSAGE", msg: "Do the plays!"});
       // state progression rules..
 

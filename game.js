@@ -1,3 +1,4 @@
+import { Collision } from './Collision.js';
 import { DealAnimation } from './DealAnimation.js';
 import { EventQueue } from './EventQueue.js';
 import Odex from './odex.js';
@@ -71,6 +72,10 @@ const gameData = {
   midObjects: [],
   topObjects: [],
   animations: [],
+
+  mouseX: 0,
+  mouseY: 0,
+  clicked: false
 };
 
 
@@ -85,6 +90,11 @@ function updateMid(layer, dt) {
   for (let i = 0; i < layer.objects.length; i++) {
     const o = layer.objects[i];
     o.update(dt);
+  }
+
+  for(let i=0; i< gameData.players.length; i++) {
+    const p = gameData.players[i];
+    p.update(dt);
   }
 }
 
@@ -136,6 +146,14 @@ function renderTop(layer) {
   animations.forEach((animation) => {
     animation.render();
   });
+}
+
+function getCanvasMousePos(canvas, event) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: Math.floor(event.clientX - rect.left),
+    y: Math.floor(event.clientY - rect.top),
+  };
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
@@ -192,5 +210,39 @@ document.addEventListener("DOMContentLoaded", async function() {
       //switch turn
       gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;
     }
+  });
+
+  // hover listener
+  mid.addEventListener("pointermove", (e) => {
+    const pos = getCanvasMousePos(mid, e);
+    gameData.mouseX = pos.x;
+    gameData.mouseY = pos.y;
+  });
+  
+  // click listener
+  mid.addEventListener("click", (e) => {
+    const pos = getCanvasMousePos(mid, e);
+    gameData.mouseX = pos.x;
+    gameData.mouseY = pos.y;
+    gameData.clicked = true;
+
+    if (gameData.turnPlayer === 0) {
+      const player = gameData.players[0];
+
+      for (let i = 0; i < player.hand.length; i++) {
+        const c = player.hand[i];
+
+        const a = {x:gameData.mouseX, y:gameData.mouseY, w:1, h:1};
+        const b = {x:c.x, y:c.y, w:c.w, h:c.h};
+      
+        if (Collision.rect(a, b)) {
+          c.selected = !c.selected;
+        }
+      }
+    }
+
+
+  
+    console.log(`→ Click at (${gameData.mouseX}, ${gameData.mouseY})`);
   });
 });

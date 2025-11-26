@@ -4,6 +4,8 @@ import { PlayTurnState } from "./PlayTurnState.js";
 import Player from "./Player.js";
 import { DealAnimation } from "./DealAnimation.js";
 import { CardUtil } from "./CardUtil.js";
+import { Card } from "./Card.js";
+import { PickTrumpCardState } from "./PickTrumpCardState.js";
 
 function dealInitialCards(players, deck, animations ) {
   let fulfilled = [];
@@ -24,7 +26,15 @@ function dealInitialCards(players, deck, animations ) {
           card: card
         });
 
-        p.hand.push(card);
+        //p.hand.push(card);
+        p.hand.push(new Card(
+          card.game,
+          card.rank,
+          card.suit,
+          card.value,
+          p.x,
+          p.y,
+        ));
         if (p.hand.length >= 5 || deck.length<= 0) {
           fulfilled.push(p.position);
         }
@@ -89,7 +99,8 @@ export class DealCardState extends State {
   }
 
   nextState() {
-    return new PlayTurnState(this.game, this.game.turnPlayer);
+    //return new PlayTurnState(this.game, this.game.turnPlayer);
+    return new PickTrumpCardState(this.game, this.game.turnPlayer);
   }
 
 }
