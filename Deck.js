@@ -23,8 +23,10 @@ export class Deck {
     }
 
     if (this.game.deck.length > 1) {
-      this.layer.ctx.fillStyle = "red";
-      this.layer.ctx.fillRect(this.x-(config.cardWidth/2), this.y-(config.cardHeight/2), config.cardWidth, config.cardHeight);
+      //this.layer.ctx.fillStyle = "red";
+      //this.layer.ctx.fillRect(this.x-(config.cardWidth/2), this.y-(config.cardHeight/2), config.cardWidth, config.cardHeight);
+
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 48, 0, 48, 64, this.x-(config.cardWidth/2), this.y-(config.cardHeight/2), config.cardWidth, config.cardHeight);
   
       this.layer.ctx.fillStyle = "#000";
       this.layer.ctx.fillText(`${this.game.deck.length} cards`,this.x-(config.cardWidth/2), this.y-(config.cardHeight/2)+32 );

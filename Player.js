@@ -110,52 +110,28 @@ export default class Player {
 
   render() {
     if (!this.isVisible) return;
-    if (this.game.turnPlayer===this.position) {
-      this.layer.ctx.fillStyle ="blue";
+    // if (this.game.turnPlayer===this.position) {
+    //   this.layer.ctx.fillStyle ="blue";
+    // } else {
+    //   this.layer.ctx.fillStyle = "red";
+    // }
+
+    //this.layer.ctx.fillRect(this.x, this.y, config.slotWidth, config.slotHeight);
+    // this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 96, 48, 64, this.x, this.y, config.slotWidth/2, config.slotHeight/2);
+    
+    if (this.type === "player") {
+      this.layer.ctx.drawImage(odex.getSprite("players"), 0, 0, 96, 128, this.x, this.y, config.slotWidth, config.slotHeight);
     } else {
-      this.layer.ctx.fillStyle = "red";
+      this.layer.ctx.drawImage(odex.getSprite("players"), 96, 0, 96, 128, this.x, this.y, config.slotWidth, config.slotHeight);
     }
 
-
-    this.layer.ctx.fillRect(this.x, this.y, config.slotWidth, config.slotHeight);
- 
     this.layer.ctx.fillStyle = "#fff";
     this.layer.ctx.fillText(this.playerName, this.x, this.y);
  
-    // if (this.type==="player" && this.isVisibleCards) {
-    //   const middle = Math.floor(this.x + config.slotWidth/2);
-    //   const pad = 16;
-    //   const totalCardsLength = this.hand.length*(pad+config.cardWidth);
-    //   const sx = Math.floor(middle-(totalCardsLength/2));  
-      
-    //   for (let i = 0; i < this.hand.length; i++) {
-    //     const c = this.hand[i];
-
-    //     this.layer.ctx.fillStyle = "#fff";
-    //     const cx = sx+(i*(pad+config.cardWidth));
-    //     const cy = Math.floor(this.y-config.slotHeight/2);
-    //     this.layer.ctx.fillRect(cx, cy, config.cardWidth, config.cardHeight);
-
-    //     this.layer.ctx.fillStyle = "#000";
-    //     this.layer.ctx.fillText(c.suit, cx, cy+16);
-    //     this.layer.ctx.fillText(c.rank, cx, cy+32);
-    //     this.layer.ctx.fillText(c.value, cx, cy+48);
-    //   }
-    // }
-
     if (this.type==="player" && this.isVisibleCards) {
-      // const middle = Math.floor(this.x + config.slotWidth/2);
-      // const pad = 16;
-      // const totalCardsLength = this.hand.length*(pad+config.cardWidth);
-      // const sx = Math.floor(middle-(totalCardsLength/2));  
       
       for (let i = 0; i < this.hand.length; i++) {
         const c = this.hand[i];
-
-        // this.layer.ctx.fillStyle = "#fff";
-        // const cx = sx+(i*(pad+config.cardWidth));
-        // const cy = Math.floor(this.y-config.slotHeight/2);
-        //c.render(cx, cy, config.cardWidth, config.cardHeight);
         c.render();
       }
     }

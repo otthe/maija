@@ -59,7 +59,7 @@ export class Card {
     this.layer.ctx.fillText(this.value, this.x, this.y+48);
 
     if (this.selected) {
-      this.layer.ctx.strokeStyle = "blue";
+      this.layer.ctx.strokeStyle = "orange";
       this.layer.ctx.lineWidth = 6;
       this.layer.ctx.strokeRect(this.x, this.y, this.w, this.h);
     }

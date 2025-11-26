@@ -13,15 +13,16 @@ export const config = {
   height: 640,
   cardWidth: 64, //48
   cardHeight: 96, //64
-  slotWidth: 64,
-  slotHeight: 96,
+  slotWidth: 96,
+  slotHeight: 128,
   dealCardDelay: 1, //50
 }
 
 export const odex = new Odex(config.width, config.height);
 
 const sprites = [
-  {name: "spritesheet", src: '/art/spritesheet.png'}
+  {name: "spritesheet", src: '/art/spritesheet.png'},
+  {name: "players", src: '/art/players.png'}
 ];
 const sounds = [];
 
@@ -205,6 +206,10 @@ document.addEventListener("DOMContentLoaded", async function() {
   //  render()                   ← draw everything
 
   console.log(odex.getSprite("spritesheet"));
+
+  odex.G.layers[0].ctx.font = "16px Arial";
+  odex.G.layers[1].ctx.font = "16px Arial";
+  odex.G.layers[2].ctx.font = "16px Arial";
 
   odex.update((layers, deltaTime) => {
 

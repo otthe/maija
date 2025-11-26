@@ -45,7 +45,7 @@ export class StartGameState extends State {
     this.game.cardsToBeat=[];
 
     this.game.midObjects.push(new Deck(this.game));
-    this.game.dealButton=new DealButton(this.game, config.width/2, config.height-64, 96, 64);
+    this.game.dealButton=new DealButton(this.game, config.width-96, config.height-64, 96, 64);
     console.log(this.game.midObjects);
     console.log(odex.G.layers[1].objects);
   }
