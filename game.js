@@ -188,11 +188,23 @@ function renderTop(layer) {
   gameData.raiseButton.render();
 }
 
+// function getCanvasMousePos(canvas, event) {
+//   const rect = canvas.getBoundingClientRect();
+//   return {
+//     x: Math.floor(event.clientX - rect.left),
+//     y: Math.floor(event.clientY - rect.top),
+//   };
+// }
+
+
+
 function getCanvasMousePos(canvas, event) {
   const rect = canvas.getBoundingClientRect();
+  const scaleX = config.width  / rect.width;
+  const scaleY = config.height / rect.height;
   return {
-    x: Math.floor(event.clientX - rect.left),
-    y: Math.floor(event.clientY - rect.top),
+    x: Math.floor((event.clientX - rect.left) * scaleX),
+    y: Math.floor((event.clientY - rect.top) * scaleY),
   };
 }
 
@@ -318,7 +330,27 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     console.log(`Click at (${gameData.mouseX}, ${gameData.mouseY})`);
   });
+
+  resizeGame();
+  window.addEventListener("resize", resizeGame);
+  window.addEventListener("orientationchange", resizeGame);
 });
+
+function resizeGame() {
+  const scale = Math.min(
+    window.innerWidth / config.width,
+    window.innerHeight / config.height
+  );
+
+  const gameRoot = document.getElementById("gameContainer");
+  gameRoot.style.transformOrigin = "top left";
+  gameRoot.style.transform = `scale(${scale})`;
+
+  // center the game if you want
+  gameRoot.style.position = "absolute";
+  gameRoot.style.left = `${(window.innerWidth - config.width * scale) / 2}px`;
+  gameRoot.style.top  = `${(window.innerHeight - config.height * scale) / 2}px`;
+}
 
 function clickBeatableCards(player, mouseRect) {
   for (let i = 0; i < gameData.cardsToBeat.length; i++) {

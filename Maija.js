@@ -31,6 +31,8 @@ export const Maija = {
       dx:config.width-32,
       dy:0
     }
+
+    eq.emit({type: "WAIT", ms: 200});
     eq.emit({type: "DISCARD_CARD", animation:rivalAnimation});
 
   }
