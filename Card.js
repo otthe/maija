@@ -19,6 +19,8 @@ export class Card {
     this.active = false;
 
     this.isVisible = false;
+
+    this.isBeatable = false;
   }
 
   update(dt) {
@@ -33,8 +35,10 @@ export class Card {
     if (this.game.cardsToBeat.includes(this)) {
       this.layer = odex.G.layers[2];
       this.selected=false;
+      this.isBeatable=true;
     } else {
       this.layer = odex.G.layers[1];
+      this.isBeatable=false;
     }
   }
   
@@ -50,7 +54,7 @@ export class Card {
       this.layer.ctx.fillText(this.value, this.x, this.y+48);
     }
 
-    if (this.selected) {
+    if (this.selected || this.game.selectedCard === this || this.game.selectedRival === this) {
       this.layer.ctx.strokeStyle = "orange";
       this.layer.ctx.lineWidth = 6;
       this.layer.ctx.strokeRect(this.x, this.y, this.w, this.h);

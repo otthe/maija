@@ -79,6 +79,13 @@ export default class Player {
         c.x = cx;
         c.y = cy;
 
+        //player hand cards should not be selectable normal way if there is cards to beat for the given player, 
+        //instead the same effect is achieved by using this.game.selectedCard for one-on-one comparison of hand card and beatable card
+        //note that we do this inside player and card for a reason - hand cards belong to players and not cardsToBeat for example
+        if (this.game.cardsToBeat.length > 0 && this.game.turnPlayer === 0) {
+          c.selected = false;
+        }
+        
         c.update(dt);
       }
     }

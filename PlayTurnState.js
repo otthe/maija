@@ -44,7 +44,8 @@ export class PlayTurnState extends State {
   }
 
   exit() {
-    
+    this.game.selectedCard = null;
+    this.game.selectedRival = null;
   }
 
 }

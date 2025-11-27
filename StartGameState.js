@@ -47,9 +47,13 @@ export class StartGameState extends State {
     this.game.cardsToBeat=[];
 
     this.game.midObjects.push(new Deck(this.game));
-    this.game.dealButton=new DealButton(this.game, config.width-(2*config.buttonWidth), config.height-config.buttonHeight, config.buttonWidth, config.buttonHeight);
-    this.game.raiseButton= new RaiseButton(this.game, config.width-config.buttonWidth, config.height-config.buttonHeight, config.buttonWidth, config.buttonHeight);
+    const pad = 8;
+    this.game.dealButton=new DealButton(this.game, config.width-(2*config.buttonWidth) - pad, config.height-config.buttonHeight - pad, config.buttonWidth, config.buttonHeight);
+    this.game.raiseButton= new RaiseButton(this.game, config.width-config.buttonWidth -pad, config.height-config.buttonHeight - pad, config.buttonWidth, config.buttonHeight);
     this.game.beatArea=new BeatArea(this.game, 0, config.height/2-(64), config.width, 128);
+
+    this.game.selectedCard = null;
+    this.game.selectedRival = null;
 
     console.log(this.game.midObjects);
     console.log(odex.G.layers[1].objects);

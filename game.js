@@ -88,6 +88,9 @@ const gameData = {
   mouseY: 0,
   clicked: false,
 
+  selectedCard: null,
+  selectedRival: null,
+
   cardsToBeat: [],
   trumpCardPicked: false,
 };
@@ -285,100 +288,132 @@ document.addEventListener("DOMContentLoaded", async function() {
 
       // CHECK IF PLAYER IS CLICKING ON HAND CARDS
       // =========================================
-      for (let i = 0; i < player.hand.length; i++) {
-        const c = player.hand[i];
-
-        const cardRect = {x:c.x, y:c.y, w:c.w, h:c.h};
+      clickHandCards(player, mouseRect);
       
-        if (Collision.rect(mouseRect, cardRect) && c.isVisible) {
-          c.selected = !c.selected;
-          return;
-        }
-      }
+      // CHECK IF PLAYER IS CLICKING ON BEATABLE CARDS
+      // =========================================
+      clickBeatableCards(player, mouseRect);
 
       // CHECK IF PLAYER IS CLICKING ON DEAL BUTTON
       // ==========================================
-      const dealButton = gameData.dealButton;
-      const dealButtonRect = {x: dealButton.x, y: dealButton.y, w: dealButton.w, h: dealButton.h};
-      if (dealButton && dealButton.active && Collision.rect(mouseRect, dealButtonRect)) {
-        if (selectedCards.length > 0) {
-          player.hand = player.hand.filter((card) => !card.selected);
-          gameData.cardsToBeat = selectedCards;
-
-          selectedCards.forEach((card) => {
-            const animation = {
-              sx: card.x,
-              sy: card.y,
-              dx: nextPlayer.x,
-              dy: nextPlayer.y,
-              card: card
-            }
-
-            console.log(animation);
-
-            eq.emit({type: "WAIT", ms: config.dealCardDelay});
-            eq.emit({type: "DEAL_CARD", animation: animation });
-          });
-
-          while (player.hand.length < 5 && gameData.deck.length > 0 ){
-            const card = CardUtil.draw(gameData.deck);
-            player.hand.push(new Card(
-              player.game,
-              card.rank,
-              card.suit,
-              card.value,
-              player.x,
-              player.y
-            ));
-
-            const animation = {
-              sx: Math.floor(config.width/2),
-              sy: Math.floor(config.height/2),
-              dx: player.x,
-              dy: player.y,
-              card: card
-            }
-
-            eq.emit({type: "WAIT", ms: config.dealCardDelay});
-            eq.emit({type: "DEAL_CARD", animation: animation });
-          }
-
-          //nextTurn();
-        } else {
-          eq.emit({ type: "SEND_MESSAGE", msg: "You need to select cards!"});
-        }
-      }
+      clickDealButton(player, nextPlayer, mouseRect, selectedCards);
 
       // CHECK IF PLAYER IS CLICKING ON RAISE BUTTON
       // ===================================================
-      const raiseButton = gameData.raiseButton;
-      const raiseButtonRect = {x: raiseButton.x, y: raiseButton.y, w: raiseButton.w, h: raiseButton.h};
-      if (raiseButton && raiseButton.active && Collision.rect(mouseRect, raiseButtonRect)) {
-        console.log("raise butotn clcik!");
-
-        for (let i = 0; i < gameData.cardsToBeat.length; i++) {
-          const card = gameData.cardsToBeat[i];
-          card.isVisible=false;
-          player.hand.push(card);
-
-
-          const animation = {
-            sx: Math.floor(config.width/2),
-            sy: Math.floor(config.height/2),
-            dx: player.x,
-            dy: player.y,
-            card: card
-          }
-
-          eq.emit({type: "WAIT", ms: config.dealCardDelay});
-          eq.emit({type: "DEAL_CARD", animation: animation });
-        }
-        gameData.cardsToBeat=[];
-
-        console.log("contains: " + gameData.cardsToBeat.length);
-      }
+      clickRaiseButton(player, mouseRect);
     }
 
     console.log(`Click at (${gameData.mouseX}, ${gameData.mouseY})`);
   });
 });
+
+function clickBeatableCards(player, mouseRect) {
+  for (let i = 0; i < gameData.cardsToBeat.length; i++) {
+    const c = gameData.cardsToBeat[i];
+    const cardRect = {x:c.x, y:c.y, w:c.w, h:c.h};
+    if (Collision.rect(mouseRect, cardRect) && c.isVisible) {
+      if (c.isBeatable) {
+        gameData.selectedRival = c;
+      }
+      return;
+    }
+  }
+}
+
+function clickHandCards(player, mouseRect) {
+  for (let i = 0; i < player.hand.length; i++) {
+    const c = player.hand[i];
+    const cardRect = {x:c.x, y:c.y, w:c.w, h:c.h};
+    if (Collision.rect(mouseRect, cardRect) && c.isVisible) {
+      if (gameData.cardsToBeat.length === 0) {
+        // if no cards to beat, can select multiple
+        c.selected = !c.selected;
+      } else {
+        // if beating, only select one
+        gameData.selectedCard = c;
+      }
+      return;
+    }
+  }
+}
+
+function clickDealButton(player, nextPlayer, mouseRect, selectedCards) {
+  const dealButton = gameData.dealButton;
+  const dealButtonRect = {x: dealButton.x, y: dealButton.y, w: dealButton.w, h: dealButton.h};
+  if (dealButton && dealButton.active && Collision.rect(mouseRect, dealButtonRect)) {
+    if (selectedCards.length > 0) {
+      player.hand = player.hand.filter((card) => !card.selected);
+      gameData.cardsToBeat = selectedCards;
+
+      selectedCards.forEach((card) => {
+        const animation = {
+          sx: card.x,
+          sy: card.y,
+          dx: nextPlayer.x,
+          dy: nextPlayer.y,
+          card: card
+        }
+
+        console.log(animation);
+
+        eq.emit({type: "WAIT", ms: config.dealCardDelay});
+        eq.emit({type: "DEAL_CARD", animation: animation });
+      });
+
+      while (player.hand.length < 5 && gameData.deck.length > 0 ){
+        const card = CardUtil.draw(gameData.deck);
+        player.hand.push(new Card(
+          player.game,
+          card.rank,
+          card.suit,
+          card.value,
+          player.x,
+          player.y
+        ));
+
+        const animation = {
+          sx: Math.floor(config.width/2),
+          sy: Math.floor(config.height/2),
+          dx: player.x,
+          dy: player.y,
+          card: card
+        }
+
+        eq.emit({type: "WAIT", ms: config.dealCardDelay});
+        eq.emit({type: "DEAL_CARD", animation: animation });
+      }
+
+      //nextTurn();
+    } else {
+      eq.emit({ type: "SEND_MESSAGE", msg: "You need to select cards!"});
+    }
+  }
+}
+
+function clickRaiseButton(player, mouseRect) {
+  const raiseButton = gameData.raiseButton;
+  const raiseButtonRect = {x: raiseButton.x, y: raiseButton.y, w: raiseButton.w, h: raiseButton.h};
+  if (raiseButton && raiseButton.active && Collision.rect(mouseRect, raiseButtonRect)) {
+    console.log("raise butotn clcik!");
+
+    for (let i = 0; i < gameData.cardsToBeat.length; i++) {
+      const card = gameData.cardsToBeat[i];
+      card.isVisible=false;
+      player.hand.push(card);
+
+      const animation = {
+        sx: Math.floor(config.width/2),
+        sy: Math.floor(config.height/2),
+        dx: player.x,
+        dy: player.y,
+        card: card
+      }
+
+      eq.emit({type: "WAIT", ms: config.dealCardDelay});
+      eq.emit({type: "DEAL_CARD", animation: animation });
+    }
+    gameData.cardsToBeat=[];
+
+    console.log("contains: " + gameData.cardsToBeat.length);
+  }
+}
