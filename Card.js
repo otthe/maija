@@ -17,14 +17,11 @@ export class Card {
     this.selected = false;
   
     this.active = false;
+
+    this.isVisible = false;
   }
 
   update(dt) {
-    // const a = {x:gameData.mouseX, y:gameData.mouseY, w:1, h:1};
-    // const b = {x:this.x, y:this.y, w:this.w, h:this.h};
-    // if (Collision.rect(a, b)) {
-    //   this.selected=true;
-    // }
     if (this.game.turnPlayer === 0) {
       this.active = true;
     } else {
@@ -33,30 +30,17 @@ export class Card {
     }
   }
   
-  // render(x,y,w,h) {
-  //   this.layer.ctx.fillRect(x, y, w, h);
-
-  //   this.layer.ctx.fillStyle = "#000";
-  //   this.layer.ctx.fillText(this.suit, x, y+16);
-  //   this.layer.ctx.fillText(this.rank, x, y+32);
-  //   this.layer.ctx.fillText(this.value, x, y+48);
-  // }
-
   render() {
-    // this.layer.ctx.fillStyle = "#fff";
-    // this.layer.ctx.fillRect(this.x, this.y, this.w, this.h);
+   
+    if (this.isVisible) {
 
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 0, 48, 64, this.x, this.y, config.cardWidth, config.cardHeight);
 
-    // drawImage(image, dx, dy)
-    // drawImage(image, dx, dy, dWidth, dHeight)
-    // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
-
-    this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 0, 48, 64, this.x, this.y, config.cardWidth, config.cardHeight);
-
-    this.layer.ctx.fillStyle = "#000";
-    this.layer.ctx.fillText(this.suit, this.x, this.y+16);
-    this.layer.ctx.fillText(this.rank, this.x, this.y+32);
-    this.layer.ctx.fillText(this.value, this.x, this.y+48);
+      this.layer.ctx.fillStyle = "#000";
+      this.layer.ctx.fillText(this.suit, this.x, this.y+16);
+      this.layer.ctx.fillText(this.rank, this.x, this.y+32);
+      this.layer.ctx.fillText(this.value, this.x, this.y+48);
+    }
 
     if (this.selected) {
       this.layer.ctx.strokeStyle = "orange";

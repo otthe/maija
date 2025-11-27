@@ -1,11 +1,12 @@
 import { config, odex } from "./game.js";
 
 export class DealAnimation {
-  constructor(startX, startY, destX, destY) {
+  constructor(startX, startY, destX, destY, callback) {
     this.sx = startX;
     this.sy = startY;
     this.dx = destX;
     this.dy = destY;
+    this.callback=callback;
 
     this.x = startX;
     this.y = startY;
@@ -33,6 +34,7 @@ export class DealAnimation {
     this.rotation += this.spinSpeed * dt;
 
     if (t >= 1) {
+      this.callback();
       this.active = false;
     }
   }

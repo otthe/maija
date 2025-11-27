@@ -27,14 +27,21 @@ function dealInitialCards(players, deck, game ) {
         });
 
         //p.hand.push(card);
-        p.hand.push(new Card(
+
+        const cardInstance = new Card(
           game,
           card.rank,
           card.suit,
           card.value,
           p.x,
           p.y,
-        ));
+        ); 
+
+        if (p.type === "player") {
+          cardInstance.isVisible = true;
+        }
+
+        p.hand.push(cardInstance);
         if (p.hand.length >= 5 || deck.length<= 0) {
           fulfilled.push(p.position);
         }

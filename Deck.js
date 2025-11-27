@@ -14,8 +14,9 @@ export class Deck {
 
   render() {
     if (this.game.trumpCardPicked && this.game.deck.length > 0) {
-      this.layer.ctx.fillStyle = "#fff";
-      this.layer.ctx.fillRect(this.x-(config.cardWidth/2)-16, this.y-(config.cardHeight/2)-64, config.cardWidth, config.cardHeight);
+      //this.layer.ctx.fillStyle = "#fff";
+      //this.layer.ctx.fillRect(this.x-(config.cardWidth/2)-16, this.y-(config.cardHeight/2)-64, config.cardWidth, config.cardHeight);
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 0, 48, 64, this.x-(config.cardWidth/2)-16, this.y-(config.cardHeight/2)-64, config.cardWidth, config.cardHeight);
       this.layer.ctx.fillStyle = "#000";
       const lastCard = this.game.deck[this.game.deck.length-1];
       const str = `${lastCard.suit} - ${lastCard.value}`;

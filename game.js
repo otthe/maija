@@ -38,10 +38,6 @@ export const sm = new StateMachine();
 export const eq = new EventQueue();
 
 const eventHandlers = {
-  DEAL_CARD: (ev) => {
-    actuallyDealCard(ev.player);
-  },
-
   PLAY_CARD: (ev) => {
     handlePlayCard(ev.player, ev.card);
   },
@@ -56,7 +52,9 @@ const eventHandlers = {
   },
 
   DEAL_CARD: (ev) => {
-    gameData.animations.push(new DealAnimation(ev.animation.sx, ev.animation.sy, ev.animation.dx, ev.animation.dy));
+    const rank = ev.animation.card.rank;
+    const suit = ev.animation.card.suit;
+    gameData.animations.push(new DealAnimation(ev.animation.sx, ev.animation.sy, ev.animation.dx, ev.animation.dy, () => setCardVisibleCallback(rank, suit)));
     //console.log(gameData.animations.length);
   },
 
@@ -175,6 +173,21 @@ function getCanvasMousePos(canvas, event) {
   };
 }
 
+function setCardVisibleCallback(rank, suit) {
+  for (let i = 0; i < gameData.players.length; i++) {
+    const p = gameData.players[i];
+    for (let j = 0; j < p.hand.length; j++) {
+      const c = p.hand[j];
+
+      if (c.rank === rank && c.suit === suit) {
+        c.isVisible = true;
+        return;
+      }
+    }
+  }
+  console.log("shoul never go here, right?");
+}
+
 function nextTurn() {
   return gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;
 }
@@ -269,7 +282,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         const cardRect = {x:c.x, y:c.y, w:c.w, h:c.h};
       
-        if (Collision.rect(mouseRect, cardRect)) {
+        if (Collision.rect(mouseRect, cardRect) && c.isVisible) {
           c.selected = !c.selected;
           return;
         }
