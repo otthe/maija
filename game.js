@@ -4,6 +4,7 @@ import { Collision } from './Collision.js';
 import { DealAnimation } from './DealAnimation.js';
 import DealButton from './DealButton.js';
 import { EventQueue } from './EventQueue.js';
+import { Maija } from './Maija.js';
 import Odex from './odex.js';
 import { StartGameState } from './StartGameState.js';
 import { StateMachine } from './StateMachine.js';
@@ -60,6 +61,10 @@ const eventHandlers = {
     //console.log(gameData.animations.length);
   },
 
+  DISCARD_CARD: (ev) => {
+    gameData.animations.push(new DealAnimation(ev.animation.sx, ev.animation.sy, ev.animation.dx, ev.animation.dy, () => discardCardCallback()));
+  },
+
   SEND_MESSAGE: (ev) => {
     console.log(ev.msg);
   },
@@ -70,6 +75,10 @@ const eventHandlers = {
   
 };
 
+function discardCardCallback() {
+  gameData.discardedCards++;
+}
+
 const gameData = {
   deck: [],
   players: [],
@@ -77,6 +86,7 @@ const gameData = {
   scores: {},
   round: 0,
   turnPlayer: null,
+  discardedCards:0,
   //pot: 0,
   //etc: {}
   botObjects: [],
@@ -170,6 +180,9 @@ function renderTop(layer) {
   });
 
   gameData.beatArea.render();
+
+  layer.ctx.fillStyle="#fff";
+  layer.ctx.fillText(`Kaadetut kortit: (${gameData.discardedCards})`, config.width-160, 16);
 
   gameData.dealButton.render();
   gameData.raiseButton.render();
@@ -314,6 +327,11 @@ function clickBeatableCards(player, mouseRect) {
     if (Collision.rect(mouseRect, cardRect) && c.isVisible) {
       if (c.isBeatable) {
         gameData.selectedRival = c;
+        if (gameData.selectedCard) {
+          Maija.evaluate(gameData.selectedCard, gameData.selectedRival, player, gameData);
+          gameData.selectedCard=null; 
+          gameData.selectedRival=null;
+        }
       }
       return;
     }
@@ -331,6 +349,11 @@ function clickHandCards(player, mouseRect) {
       } else {
         // if beating, only select one
         gameData.selectedCard = c;
+        if (gameData.selectedRival) {
+          Maija.evaluate(gameData.selectedCard, gameData.selectedRival, player, gameData);
+          gameData.selectedCard=null; 
+          gameData.selectedRival=null;
+        }
       }
       return;
     }
@@ -382,7 +405,8 @@ function clickDealButton(player, nextPlayer, mouseRect, selectedCards) {
         eq.emit({type: "WAIT", ms: config.dealCardDelay});
         eq.emit({type: "DEAL_CARD", animation: animation });
       }
-
+      gameData.selectedCard=null; 
+      gameData.selectedRival=null;
       //nextTurn();
     } else {
       eq.emit({ type: "SEND_MESSAGE", msg: "You need to select cards!"});
@@ -413,6 +437,8 @@ function clickRaiseButton(player, mouseRect) {
       eq.emit({type: "DEAL_CARD", animation: animation });
     }
     gameData.cardsToBeat=[];
+    gameData.selectedCard=null; 
+    gameData.selectedRival=null;
 
     console.log("contains: " + gameData.cardsToBeat.length);
   }
