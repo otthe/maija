@@ -6,6 +6,8 @@ import { CardUtil } from "./CardUtil.js";
 import { DealCardState } from "./DealCardState.js";
 import { Deck } from "./Deck.js";
 import DealButton from "./DealButton.js";
+import { BeatArea } from "./BeatArea.js";
+import RaiseButton from "./RaiseButton.js";
 
 function addPlayers(amount=5, game) {
   let players = [];
@@ -45,7 +47,10 @@ export class StartGameState extends State {
     this.game.cardsToBeat=[];
 
     this.game.midObjects.push(new Deck(this.game));
-    this.game.dealButton=new DealButton(this.game, config.width-96, config.height-64, 96, 64);
+    this.game.dealButton=new DealButton(this.game, config.width-(2*config.buttonWidth), config.height-config.buttonHeight, config.buttonWidth, config.buttonHeight);
+    this.game.raiseButton= new RaiseButton(this.game, config.width-config.buttonWidth, config.height-config.buttonHeight, config.buttonWidth, config.buttonHeight);
+    this.game.beatArea=new BeatArea(this.game, 0, config.height/2-(64), config.width, 128);
+
     console.log(this.game.midObjects);
     console.log(odex.G.layers[1].objects);
   }

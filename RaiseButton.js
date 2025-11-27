@@ -13,7 +13,7 @@ export default class RaiseButton {
   }
 
   update(dt) {
-    if (this.game.turnPlayer === 0 && this.game.cardsToBeat.length === 0) {
+    if (this.game.turnPlayer === 0 && this.game.cardsToBeat.length > 0) {
       this.active = true;
     } else {
       this.active = false;
@@ -23,12 +23,13 @@ export default class RaiseButton {
   render() {
     if (this.active) {
       const player = this.game.players[0];
-      this.layer.ctx.fillStyle = "gray";
-      this.layer.ctx.fillRect(this.x, this.y, this.w, this.h);
-    
+      // this.layer.ctx.fillStyle = "brown";
+      
+      // this.layer.ctx.fillRect(this.x, this.y, this.w, this.h);
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 48, 64, 48, 32, this.x, this.y, this.w, this.h);
+
       this.layer.ctx.fillStyle = "#000";
-      const selectedCards = player.hand.filter((card) => card.selected);
-      this.layer.ctx.fillText(`Nosta ${selectedCards.length} korttia`,this.x, this.y+(this.h/2));
+      this.layer.ctx.fillText(`Nosta ${this.game.cardsToBeat.length} korttia`,this.x, this.y+(this.h/2));
     }
   }
 }

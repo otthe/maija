@@ -93,7 +93,10 @@ export class DealCardState extends State {
 
   exit() {
     if (this.initialDeal) {
-      this.game.players[0].isVisibleCards = true;
+      // this.game.players[0].isVisibleCards = true;
+      this.game.players.forEach((p) => {
+        p.isVisibleCards = true;
+      });
     }
   }
 

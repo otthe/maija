@@ -73,7 +73,6 @@ export default class Player {
       for (let i = 0; i < this.hand.length; i++) {
         const c = this.hand[i];
 
-        this.layer.ctx.fillStyle = "#fff";
         const cx = sx+(i*(pad+config.cardWidth));
         const cy = Math.floor(this.y-config.slotHeight/2);
 
@@ -84,37 +83,10 @@ export default class Player {
       }
     }
 
-    // (new Card(
-    //   game,
-    //   card.rank,
-    //   card.suit,
-    //   card.value,
-    //   p.x,
-    //   p.y,
-    // ))
-
-    // while(this.hand.length < 5 && this.game.deck.length > 0) {
-    //   const card = CardUtil.draw(this.game.deck);
-    //   this.hand.push(
-    //     new Card(
-    //       this.game,
-    //       card.rank,
-    //       card.suit,
-    //       card.value,
-    //       this.x, 
-    //       this.y,
-    //     ) 
-    //   );
-    // }
   }
 
   render() {
     if (!this.isVisible) return;
-    // if (this.game.turnPlayer===this.position) {
-    //   this.layer.ctx.fillStyle ="blue";
-    // } else {
-    //   this.layer.ctx.fillStyle = "red";
-    // }
 
     //this.layer.ctx.fillRect(this.x, this.y, config.slotWidth, config.slotHeight);
     // this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 96, 48, 64, this.x, this.y, config.slotWidth/2, config.slotHeight/2);
@@ -125,14 +97,25 @@ export default class Player {
       this.layer.ctx.drawImage(odex.getSprite("players"), 96, 0, 96, 128, this.x, this.y, config.slotWidth, config.slotHeight);
     }
 
-    this.layer.ctx.fillStyle = "#fff";
+
+
+    if (this.game.turnPlayer===this.position) {
+      this.layer.ctx.fillStyle ="orange";
+    } else {
+      this.layer.ctx.fillStyle = "#fff";
+    }
     this.layer.ctx.fillText(this.playerName, this.x, this.y);
  
     if (this.type==="player" && this.isVisibleCards) {
-      
       for (let i = 0; i < this.hand.length; i++) {
         const c = this.hand[i];
         c.render();
+      }
+    } else if (this.type === "bot" && this.isVisibleCards) {
+      for (let i = 0; i < this.hand.length; i++) {
+        const c = this.hand[i];
+        c.botRender(this.x+i, (this.y+(config.slotHeight/2))+i);
+        //c.render();
       }
     }
   }

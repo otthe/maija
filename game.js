@@ -15,6 +15,8 @@ export const config = {
   cardHeight: 96, //64
   slotWidth: 96,
   slotHeight: 128,
+  buttonWidth: 96,
+  buttonHeight:64,
   dealCardDelay: 1, //50
 }
 
@@ -122,8 +124,10 @@ function updateTop(layer, dt) {
     animation.update(dt);
   });
 
-  gameData.dealButton.update(dt);
 
+  gameData.beatArea.update(dt);
+  gameData.dealButton.update(dt);
+  gameData.raiseButton.update(dt);
 }
 
 function renderBot(layer) {
@@ -162,7 +166,10 @@ function renderTop(layer) {
     animation.render();
   });
 
+  gameData.beatArea.render();
+
   gameData.dealButton.render();
+  gameData.raiseButton.render();
 }
 
 function getCanvasMousePos(canvas, event) {
@@ -276,7 +283,8 @@ document.addEventListener("DOMContentLoaded", async function() {
       const selectedCards = player.hand.filter((card) => card.selected);
       const mouseRect = {x:gameData.mouseX, y:gameData.mouseY, w:1, h:1};
 
-      //is it colliding with player cards
+      // CHECK IF PLAYER IS CLICKING ON HAND CARDS
+      // =========================================
       for (let i = 0; i < player.hand.length; i++) {
         const c = player.hand[i];
 
@@ -288,13 +296,14 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
       }
 
-      //if player is about to deal
+      // CHECK IF PLAYER IS CLICKING ON DEAL BUTTON
+      // ==========================================
       const dealButton = gameData.dealButton;
       const dealButtonRect = {x: dealButton.x, y: dealButton.y, w: dealButton.w, h: dealButton.h};
       if (dealButton && dealButton.active && Collision.rect(mouseRect, dealButtonRect)) {
         if (selectedCards.length > 0) {
           player.hand = player.hand.filter((card) => !card.selected);
-         // gameData.cardsToBeat = selectedCards;
+          gameData.cardsToBeat = selectedCards;
 
           selectedCards.forEach((card) => {
             const animation = {
@@ -340,7 +349,34 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
       }
 
-      //if player is about to raise
+      // CHECK IF PLAYER IS CLICKING ON RAISE BUTTON
+      // ===================================================
+      const raiseButton = gameData.raiseButton;
+      const raiseButtonRect = {x: raiseButton.x, y: raiseButton.y, w: raiseButton.w, h: raiseButton.h};
+      if (raiseButton && raiseButton.active && Collision.rect(mouseRect, raiseButtonRect)) {
+        console.log("raise butotn clcik!");
+
+        for (let i = 0; i < gameData.cardsToBeat.length; i++) {
+          const card = gameData.cardsToBeat[i];
+          card.isVisible=false;
+          player.hand.push(card);
+
+
+          const animation = {
+            sx: Math.floor(config.width/2),
+            sy: Math.floor(config.height/2),
+            dx: player.x,
+            dy: player.y,
+            card: card
+          }
+
+          eq.emit({type: "WAIT", ms: config.dealCardDelay});
+          eq.emit({type: "DEAL_CARD", animation: animation });
+        }
+        gameData.cardsToBeat=[];
+
+        console.log("contains: " + gameData.cardsToBeat.length);
+      }
     }
 
     console.log(`Click at (${gameData.mouseX}, ${gameData.mouseY})`);

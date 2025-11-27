@@ -21,6 +21,8 @@ export class PlayTurnState extends State {
       eq.emit({type: "SEND_MESSAGE", msg: "Do the plays!"});
       
       if (this.game.cardsToBeat.length === 0) {
+
+      } else {
         
       }
       

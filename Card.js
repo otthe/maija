@@ -28,6 +28,14 @@ export class Card {
       this.active = false;
       this.selected=false;
     }
+
+    //adjust variables depending on if its beatable or in a hand
+    if (this.game.cardsToBeat.includes(this)) {
+      this.layer = odex.G.layers[2];
+      this.selected=false;
+    } else {
+      this.layer = odex.G.layers[1];
+    }
   }
   
   render() {
@@ -46,6 +54,21 @@ export class Card {
       this.layer.ctx.strokeStyle = "orange";
       this.layer.ctx.lineWidth = 6;
       this.layer.ctx.strokeRect(this.x, this.y, this.w, this.h);
+    }
+  }
+
+  //normal render for players and this to render wrong-sided stack for bots
+  botRender(bx,by) {
+    if (this.isVisible) {
+
+      // this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 48, 0, 48, 64, bx, by, config.cardWidth, config.cardHeight);
+
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 48, 0, 48, 64, bx, by, 48, 64);
+
+      // this.layer.ctx.fillStyle = "#000";
+      // this.layer.ctx.fillText(this.suit, bx, by+16);
+      // this.layer.ctx.fillText(this.rank, bx, by+32);
+      // this.layer.ctx.fillText(this.value, bx, by+48);
     }
   }
 
