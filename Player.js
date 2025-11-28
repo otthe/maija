@@ -99,9 +99,11 @@ export default class Player {
     // this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 96, 48, 64, this.x, this.y, config.slotWidth/2, config.slotHeight/2);
     
     if (this.type === "player") {
-      this.layer.ctx.drawImage(odex.getSprite("players"), 0, 0, 96, 128, this.x, this.y, config.slotWidth, config.slotHeight);
+      // this.layer.ctx.drawImage(odex.getSprite("players"), 0, 0, 96, 128, this.x, this.y, config.slotWidth, config.slotHeight);
+      this.layer.ctx.drawImage(odex.getSprite("player"), 0, 0, 384, 512, this.x, this.y, config.slotWidth, config.slotHeight);
     } else {
-      this.layer.ctx.drawImage(odex.getSprite("players"), 96, 0, 96, 128, this.x, this.y, config.slotWidth, config.slotHeight);
+      // this.layer.ctx.drawImage(odex.getSprite("players"), 96, 0, 96, 128, this.x, this.y, config.slotWidth, config.slotHeight);
+      this.layer.ctx.drawImage(odex.getSprite("player"), 0, 0, 384, 512, this.x, this.y, config.slotWidth, config.slotHeight);
     }
 
 

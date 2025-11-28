@@ -47,6 +47,7 @@ export class StartGameState extends State {
 
     this.game.trumpCardPicked=false;
     this.game.cardsToBeat=[];
+    this.game.dealedBy=null;
 
     this.game.midObjects.push(new Deck(this.game));
     const pad = 8;

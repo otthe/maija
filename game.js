@@ -11,7 +11,7 @@ import { StateMachine } from './StateMachine.js';
 
 export const config = {
   width: 960,
-  height: 640,
+  height: 540, /*640*/
   cardWidth: 64, //48
   cardHeight: 96, //64
   slotWidth: 96,
@@ -21,11 +21,15 @@ export const config = {
   dealCardDelay: 1, //50
 }
 
+let cachedBackground = null;
+
 export const odex = new Odex(config.width, config.height);
 
 const sprites = [
   {name: "spritesheet", src: '/art/spritesheet.png'},
-  {name: "players", src: '/art/players.png'}
+  {name: "players", src: '/art/players.png'},
+  {name: "background", src: '/art/background8.jpg'},
+  {name: "player", src: '/art/player.png'},
 ];
 const sounds = [];
 
@@ -102,6 +106,8 @@ const gameData = {
   selectedRival: null,
 
   cardsToBeat: [],
+  dealedBy: null,
+
   trumpCardPicked: false,
 };
 
@@ -145,6 +151,14 @@ function updateTop(layer, dt) {
 
 function renderBot(layer) {
   odex.clear(layer.ctx);
+
+  // drawImage(image, dx, dy)
+  // drawImage(image, dx, dy, dWidth, dHeight)
+  // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+
+  if (cachedBackground) {
+    layer.ctx.drawImage(cachedBackground, 0, 0);
+  }
 
   for (let i = 0; i < layer.objects.length; i++) {
     const o = layer.objects[i];
@@ -196,8 +210,6 @@ function renderTop(layer) {
 //   };
 // }
 
-
-
 function getCanvasMousePos(canvas, event) {
   const rect = canvas.getBoundingClientRect();
   const scaleX = config.width  / rect.width;
@@ -227,6 +239,17 @@ function nextTurn() {
   return gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;
 }
 
+function preprocessBackground() {
+  const bg = odex.getSprite("background"); // 3840x2160
+  const buffer = document.createElement("canvas");
+  buffer.width = config.width;  // 960
+  buffer.height = config.height; // 540
+  const bctx = buffer.getContext("2d");
+  bctx.imageSmoothingEnabled = true;
+  bctx.drawImage(bg, 0, 0, bg.width, bg.height, 0, 0, buffer.width, buffer.height);
+  return buffer;
+}
+
 document.addEventListener("DOMContentLoaded", async function() {
   await odex.init(sprites, sounds);
 
@@ -236,16 +259,25 @@ document.addEventListener("DOMContentLoaded", async function() {
 
   odex.G.layers.forEach((layer) => {
     const l = layer.layer;
+    console.log("layer");
+    console.log(layer);
     const scale= 1;
     l.width = config.width;
     l.height = config.height;
     l.style.width = `${Math.floor(config.width * scale)}px`;
     l.style.height = `${Math.floor(config.height * scale)}px`;
+
+    layer.ctx.imageSmoothingEnabled = true;
+    layer.ctx.webkitImageSmoothingEnabled = true;
+    layer.ctx.mozImageSmoothingEnabled = true;
+    layer.ctx.msImageSmoothingEnabled = true;
   });
 
   odex.loop();
 
   sm.change(new StartGameState(gameData));
+
+  cachedBackground = preprocessBackground();
 
   // update(dt):
   //  stateMachine.update(dt)    ← high-level logic (what should happen now)
@@ -286,6 +318,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     if (e.code === "Space" && sm.current.constructor.name === "PlayTurnState") {
       //switch turn
       //gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;
+      gameData.dealedBy = gameData.players[gameData.turnPlayer];
       nextTurn();
     }
   });
@@ -331,9 +364,9 @@ document.addEventListener("DOMContentLoaded", async function() {
     console.log(`Click at (${gameData.mouseX}, ${gameData.mouseY})`);
   });
 
-  resizeGame();
-  window.addEventListener("resize", resizeGame);
-  window.addEventListener("orientationchange", resizeGame);
+  // resizeGame();
+  // window.addEventListener("resize", resizeGame);
+  // window.addEventListener("orientationchange", resizeGame);
 });
 
 function resizeGame() {
@@ -439,12 +472,37 @@ function clickDealButton(player, nextPlayer, mouseRect, selectedCards) {
       }
       gameData.selectedCard=null; 
       gameData.selectedRival=null;
-      //nextTurn();
+      gameData.dealedBy=player;
+      nextTurn();
     } else {
       eq.emit({ type: "SEND_MESSAGE", msg: "You need to select cards!"});
     }
   }
 }
+
+// function raiseCards(game, player, ctb) {
+//   for (let i = 0; i < ctb.length; i++) {
+//     const card = ctb[i];
+//     card.isVisible=false;
+//     player.hand.push(card);
+
+//     const animation = {
+//       sx: Math.floor(config.width/2),
+//       sy: Math.floor(config.height/2),
+//       dx: player.x,
+//       dy: player.y,
+//       card: card
+//     }
+
+//     eq.emit({type: "WAIT", ms: config.dealCardDelay});
+//     eq.emit({type: "DEAL_CARD", animation: animation });
+//   }
+//   game.cardsToBeat=[];
+//   game.selectedCard=null; 
+//   game.selectedRival=null;
+
+//   console.log("contains: " + game.cardsToBeat.length);
+// }
 
 function clickRaiseButton(player, mouseRect) {
   const raiseButton = gameData.raiseButton;
@@ -452,26 +510,27 @@ function clickRaiseButton(player, mouseRect) {
   if (raiseButton && raiseButton.active && Collision.rect(mouseRect, raiseButtonRect)) {
     console.log("raise butotn clcik!");
 
-    for (let i = 0; i < gameData.cardsToBeat.length; i++) {
-      const card = gameData.cardsToBeat[i];
-      card.isVisible=false;
-      player.hand.push(card);
+    Maija.raiseCards(gameData, player, gameData.cardsToBeat);
+    // for (let i = 0; i < gameData.cardsToBeat.length; i++) {
+    //   const card = gameData.cardsToBeat[i];
+    //   card.isVisible=false;
+    //   player.hand.push(card);
 
-      const animation = {
-        sx: Math.floor(config.width/2),
-        sy: Math.floor(config.height/2),
-        dx: player.x,
-        dy: player.y,
-        card: card
-      }
+    //   const animation = {
+    //     sx: Math.floor(config.width/2),
+    //     sy: Math.floor(config.height/2),
+    //     dx: player.x,
+    //     dy: player.y,
+    //     card: card
+    //   }
 
-      eq.emit({type: "WAIT", ms: config.dealCardDelay});
-      eq.emit({type: "DEAL_CARD", animation: animation });
-    }
-    gameData.cardsToBeat=[];
-    gameData.selectedCard=null; 
-    gameData.selectedRival=null;
+    //   eq.emit({type: "WAIT", ms: config.dealCardDelay});
+    //   eq.emit({type: "DEAL_CARD", animation: animation });
+    // }
+    // gameData.cardsToBeat=[];
+    // gameData.selectedCard=null; 
+    // gameData.selectedRival=null;
 
-    console.log("contains: " + gameData.cardsToBeat.length);
+    // console.log("contains: " + gameData.cardsToBeat.length);
   }
 }

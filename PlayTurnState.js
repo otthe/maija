@@ -20,10 +20,9 @@ export class PlayTurnState extends State {
       //eq.emit({ type: "WAIT", ms: 500 });
       eq.emit({type: "SEND_MESSAGE", msg: "Do the plays!"});
       
-      if (this.game.cardsToBeat.length === 0) {
-
-      } else {
-        
+      const player = this.game.players[this.game.turnPlayer];
+      if (this.game.cardsToBeat.length > 0 && player.type === "bot") {
+        console.log("botti nostaa!");
       }
       
       // state progression rules..
