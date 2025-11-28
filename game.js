@@ -40,6 +40,8 @@ export const config = {
 
 let cachedBackground = null;
 
+let gameData = null;
+
 export const odex = new Odex(config.width, config.height);
 
 const sprites = [
@@ -101,7 +103,7 @@ function discardCardCallback() {
   gameData.discardedCards++;
 }
 
-const gameData = {
+const DEFAULT_GAME_DATA = {
   deck: [],
   players: [],
   table: [],
@@ -268,6 +270,14 @@ function preprocessBackground() {
   return buffer;
 }
 
+function resetGame() {
+  odex.G.layers.forEach((layer) => {
+    layer.objects=[];
+  });
+  gameData = {...DEFAULT_GAME_DATA};
+  sm.change(new StartGameState(gameData));
+}
+
 document.addEventListener("DOMContentLoaded", async function() {
   await odex.init(sprites, sounds);
 
@@ -293,7 +303,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 
   odex.loop();
 
-  sm.change(new StartGameState(gameData));
+  //sm.change(new StartGameState(gameData));
+  resetGame();
 
   cachedBackground = preprocessBackground();
 
@@ -342,7 +353,11 @@ document.addEventListener("DOMContentLoaded", async function() {
       //gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;
       gameData.dealedBy = gameData.players[gameData.turnPlayer];
       Maija.nextTurn(gameData);
+    } else if (e.code === "KeyR") {
+      resetGame();      
     }
+
+    console.log(e.code);
   });
 
   // hover listener
