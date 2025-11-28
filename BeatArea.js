@@ -31,7 +31,7 @@ export class BeatArea {
   render() {
     if (this.game.cardsToBeat.length > 0 /*&& sm.current.constructor.name === "PlayTurnState"*/ ) {
       const w = config.width;
-      this.layer.ctx.fillStyle = "rgba(0,0,0,0.7)";
+      this.layer.ctx.fillStyle = "rgba(0,0,0,0.5)";
       this.layer.ctx.fillRect(this.x, this.y, this.w, this.h);
 
       this.game.cardsToBeat.forEach((c) => {

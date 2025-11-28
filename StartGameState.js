@@ -8,6 +8,7 @@ import { Deck } from "./Deck.js";
 import DealButton from "./DealButton.js";
 import { BeatArea } from "./BeatArea.js";
 import RaiseButton from "./RaiseButton.js";
+import InfoBox from "./InfoBox.js";
 
 function addPlayers(amount=5, game) {
   let players = [];
@@ -49,11 +50,14 @@ export class StartGameState extends State {
     this.game.cardsToBeat=[];
     this.game.dealedBy=null;
 
+    this.game.infoMessage="";
+
     this.game.midObjects.push(new Deck(this.game));
     const pad = 8;
     this.game.dealButton=new DealButton(this.game, config.width-(2*config.buttonWidth) - pad, config.height-config.buttonHeight - pad, config.buttonWidth, config.buttonHeight);
     this.game.raiseButton= new RaiseButton(this.game, config.width-config.buttonWidth -pad, config.height-config.buttonHeight - pad, config.buttonWidth, config.buttonHeight);
     this.game.beatArea=new BeatArea(this.game, 0, config.height/2-(64), config.width, 128);
+    this.game.infoBox=new InfoBox(this.game, config.width-config.infoWidth, config.height-config.infoHeight, config.infoWidth, config.infoHeight);
 
     this.game.selectedCard = null;
     this.game.selectedRival = null;

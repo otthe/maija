@@ -9,7 +9,7 @@ export default class RaiseButton {
     this.h=h;
 
     this.active = false;
-    this.layer=odex.G.layers[1];
+    this.layer=odex.G.layers[2];
   }
 
   update(dt) {

@@ -31,6 +31,8 @@ export const config = {
   slotHeight: 128,
   buttonWidth: 96,
   buttonHeight:64,
+  infoWidth: 384,
+  infoHeight: 108,
   dealCardDelay: 1, //50
 }
 
@@ -84,6 +86,7 @@ const eventHandlers = {
 
   SEND_MESSAGE: (ev) => {
     console.log(ev.msg);
+    gameData.infoMessage=ev.msg;
   },
 
   PICK_TRUMP_CARD: (ev) => {
@@ -122,6 +125,8 @@ const gameData = {
   dealedBy: null,
 
   trumpCardPicked: false,
+
+  infoMessage: "",
 };
 
 
@@ -211,6 +216,7 @@ function renderTop(layer) {
   layer.ctx.fillStyle="#fff";
   layer.ctx.fillText(`Kaadetut kortit: (${gameData.discardedCards})`, config.width-160, 16);
 
+  gameData.infoBox.render();
   gameData.dealButton.render();
   gameData.raiseButton.render();
 }

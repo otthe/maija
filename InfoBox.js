@@ -1,0 +1,24 @@
+import { odex,config } from "./game.js";
+
+export default class InfoBox {
+  constructor(game,x,y,w,h) {
+    this.game=game;
+    this.x=x;
+    this.y=y;
+    this.w=w;
+    this.h=h;
+    this.layer=odex.G.layers[2];
+  }
+
+  update(dt) {
+
+  }
+
+  render(){
+    this.layer.ctx.fillStyle ="rgba(0,0,0,0.5)";
+    this.layer.ctx.fillRect(this.x,this.y, this.w, this.h);
+
+    this.layer.ctx.fillStyle="#fff";
+    this.layer.ctx.fillText(this.game.infoMessage, this.x+16, this.y+16);
+  }
+}

@@ -1,3 +1,5 @@
+import { config, eq, odex, sm } from "./game.js";
+import { Maija } from "./Maija.js";
 
 function raiseAll(){
 
@@ -27,6 +29,37 @@ function deciceDealStrategy(hand) {
 
 }
 
+          // if (this.game.cardsToBeat.length > 0 ) {
+          //   Maija.raiseCards(this.game, player, this.game.cardsToBeat);
+          // } else {
+          //   if (player.hand.length > 0) {
+          //     player.hand[0].selected = true;
+          //     const selectedCards = player.hand.filter((card) => card.selected);
+          //     Maija.dealCards(this.game, player, nextPlayer, selectedCards);
+          //   }  
+          // }
+
+export function botPlay(game) {
+  const ctb = game.cardsToBeat;
+  const player = game.players[game.turnPlayer];
+  const nextPlayer = game.players[(game.turnPlayer + 1) % game.players.length];
+  const hand = player.hand;
+  // if (hand.length === 0 && ctb.length === 0) {
+  //   //Maija.announceWinner(player);
+  // }
+
+  if (ctb.length > 0) {
+    //decideRaiseStrategy(ctb, hand, game.trumpCard.suit);
+    Maija.raiseCards(game, player, ctb);
+  } else {
+    //decideDealStrategy(hand);
+    if (hand.length > 0) {
+      hand[0].selected = true;
+      const selectedCards = hand.filter((card) => card.selected);
+      Maija.dealCards(game, player, nextPlayer, selectedCards);
+    }
+  }
+}
 
 /*
 if ctb.length > 0
@@ -48,16 +81,3 @@ else {
 } 
 */
 
-function botPlay(game, hand) {
-  const ctb = game.cardsToBeat;
-  const player = game.players[game.turnPlayer];
-  if (hand.length === 0 && ctb.length === 0) {
-    Maija.announceWinner(player);
-  }
-
-  if (ctb.length > 0) {
-    decideRaiseStrategy(ctb, hand, game.trumpCard.suit);
-  } else {
-    decideDealStrategy(hand);
-  }
-}

@@ -119,4 +119,5 @@ export const Maija = {
   nextTurn(game) {
     return game.turnPlayer = (game.turnPlayer + 1) % game.players.length;
   }
+
 }
