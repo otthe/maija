@@ -248,11 +248,6 @@ function setCardVisibleCallback(rank, suit) {
   console.log("shoul never go here, right?");
 }
 
-//real one in Maija-module? this for debugging
-function nextTurn() {
-  return gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;
-}
-
 function preprocessBackground() {
   const bg = odex.getSprite("background"); // 3840x2160
   const buffer = document.createElement("canvas");
@@ -336,7 +331,7 @@ document.addEventListener("DOMContentLoaded", async function() {
       //switch turn
       //gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;
       gameData.dealedBy = gameData.players[gameData.turnPlayer];
-      nextTurn();
+      Maija.nextTurn(gameData);
     }
   });
 

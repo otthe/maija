@@ -22,11 +22,17 @@ export class PlayTurnState extends State {
       eq.emit({type: "SEND_MESSAGE", msg: "Do the plays!"});
       
       const player = this.game.players[this.game.turnPlayer];
+      const nextPlayer = this.game.players[(this.game.turnPlayer + 1) % this.game.players.length];
       if (player.type === "bot") {
         if (this.game.cardsToBeat.length > 0 ) {
           Maija.raiseCards(this.game, player, this.game.cardsToBeat);
+        } else {
+          if (player.hand.length > 0) {
+            player.hand[0].selected = true;
+            const selectedCards = player.hand.filter((card) => card.selected);
+            Maija.dealCards(this.game, player, nextPlayer, selectedCards);
+          }  
         }
-        Maija.nextTurn(this.game);
       }
       
       // state progression rules..
