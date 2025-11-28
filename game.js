@@ -275,6 +275,7 @@ function resetGame() {
     layer.objects=[];
   });
   gameData = {...DEFAULT_GAME_DATA};
+  if (eq) eq.clear();
   sm.change(new StartGameState(gameData));
 }
 
