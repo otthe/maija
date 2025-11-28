@@ -44,12 +44,10 @@ export function botPlay(game) {
   const player = game.players[game.turnPlayer];
   const nextPlayer = game.players[(game.turnPlayer + 1) % game.players.length];
   const hand = player.hand;
-  // if (hand.length === 0 && ctb.length === 0) {
-  //   //Maija.announceWinner(player);
-  // }
+  const trumpSuit = game.trumpCard.suit;
 
   if (ctb.length > 0) {
-    //decideRaiseStrategy(ctb, hand, game.trumpCard.suit);
+    //decideRaiseStrategy(ctb, hand, trumpSuit);
     Maija.raiseCards(game, player, ctb);
   } else {
     //decideDealStrategy(hand);

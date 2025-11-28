@@ -8,15 +8,14 @@ export class PickTrumpCardState extends State {
     super();
     this.game=game;
     this.done = false;
-    this.trumpCard = null;
   }
 
   enter() {
     console.log("[PickTrumpCardState]");
 
-    this.trumpCard = CardUtil.draw(this.game.deck);
-    console.log(this.trumpCard);
-    this.game.deck.push(this.trumpCard);
+    this.game.trumpCard = CardUtil.draw(this.game.deck);
+    console.log(this.game.trumpCard);
+    this.game.deck.push(this.game.trumpCard);
   }
 
   update(dt) {
@@ -26,7 +25,7 @@ export class PickTrumpCardState extends State {
       eq.emit({type: "PICK_TRUMP_CARD"});
 
       // state progression rules...
-      if (this.trumpCard) {
+      if (this.game.trumpCard) {
         this.done=true;
         this.game.trumpCardPicked = true;
       }

@@ -46,6 +46,7 @@ export class StartGameState extends State {
     this.game.topObjects = odex.G.layers[2].objects;
     this.game.animations = [];
 
+    this.game.trumpCard=null;
     this.game.trumpCardPicked=false;
     this.game.cardsToBeat=[];
     this.game.dealedBy=null;

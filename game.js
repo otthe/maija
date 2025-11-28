@@ -1,3 +1,5 @@
+/* Copyright 2025- @ www.github.com/otthe */
+
 import { Card } from './Card.js';
 import { CardUtil } from './CardUtil.js';
 import { Collision } from './Collision.js';
@@ -124,6 +126,7 @@ const gameData = {
   cardsToBeat: [],
   dealedBy: null,
 
+  trumpCard:null,
   trumpCardPicked: false,
 
   infoMessage: "",
