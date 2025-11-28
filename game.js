@@ -58,10 +58,6 @@ export const sm = new StateMachine();
 export const eq = new EventQueue();
 
 const eventHandlers = {
-  PLAY_CARD: (ev) => {
-    handlePlayCard(ev.player, ev.card);
-  },
-
   WAIT: (ev) => {
     // WAIT logic is handled internally
   },
@@ -80,6 +76,10 @@ const eventHandlers = {
 
   DISCARD_CARD: (ev) => {
     gameData.animations.push(new DealAnimation(ev.animation.sx, ev.animation.sy, ev.animation.dx, ev.animation.dy, () => discardCardCallback()));
+  },
+
+  BOT_PLAY: (ev) => {
+    ev.callback();
   },
 
   SEND_MESSAGE: (ev) => {
@@ -321,12 +321,13 @@ document.addEventListener("DOMContentLoaded", async function() {
     layers[2].ctx.fillStyle = "#fff";
     layers[2].ctx.fillText(sm.current.constructor.name, 32,32);
 
-    layers[2].ctx.fillText(gameData.players[gameData.turnPlayer].playerName, 32,64);
-    if(gameData.dealedBy) layers[2].ctx.fillText(gameData.dealedBy.playerName, 32,96);
+    layers[2].ctx.fillText(`current player: ${gameData.players[gameData.turnPlayer].playerName}`, 32,64);
+    if(gameData.dealedBy) layers[2].ctx.fillText(`dealed by: ${gameData.dealedBy.playerName}`, 32,96);
 
   });
 
   document.addEventListener("keyup", function(e) {
+    //debug rmv later
     if (e.code === "Space" && sm.current.constructor.name === "PlayTurnState") {
       //switch turn
       //gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;

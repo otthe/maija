@@ -59,6 +59,7 @@ export const Maija = {
     game.cardsToBeat=[];
     game.selectedCard=null; 
     game.selectedRival=null;
+    game.dealedBy = null;
 
     console.log("contains: " + game.cardsToBeat.length);
     this.nextTurn(game);

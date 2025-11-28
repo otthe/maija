@@ -27,26 +27,37 @@ function deciceDealStrategy(hand) {
 
 }
 
+
+/*
+if ctb.length > 0
+  -> decision(3)
+    -> raise all
+      -> nextTurn
+
+    - discard all
+      -> deal
+    
+    - discard some, raise some
+      -> nextTurn
+else {
+  -> decision(4)
+      ->deal(trump)
+      ->deal(amountMax)
+      ->deal(amountMin)
+      ->deal(queen of spades included)
+} 
+*/
+
 function botPlay(game, hand) {
   const ctb = game.cardsToBeat;
-  
-  /*
-  if ctb.length > 0
-    -> decision(3)
-      -> raise all
-        -> nextTurn
+  const player = game.players[game.turnPlayer];
+  if (hand.length === 0 && ctb.length === 0) {
+    Maija.announceWinner(player);
+  }
 
-      - discard all
-        -> deal
-      
-      - discard some, raise some
-        -> nextTurn
-  else {
-    -> decision(4)
-        ->deal(trump)
-        ->deal(amountMax)
-        ->deal(amountMin)
-        ->deal(queen of spades included)
-  } 
-  */
+  if (ctb.length > 0) {
+    decideRaiseStrategy(ctb, hand, game.trumpCard.suit);
+  } else {
+    decideDealStrategy(hand);
+  }
 }
