@@ -1,5 +1,6 @@
 import { EvaluatePlayState } from "./EvaluatePlayState.js";
 import { eq, config, odex } from "./game.js";
+import { Maija } from "./Maija.js";
 import { State } from "./State.js";
 
 export class PlayTurnState extends State {
@@ -21,12 +22,16 @@ export class PlayTurnState extends State {
       eq.emit({type: "SEND_MESSAGE", msg: "Do the plays!"});
       
       const player = this.game.players[this.game.turnPlayer];
-      if (this.game.cardsToBeat.length > 0 && player.type === "bot") {
-        console.log("botti nostaa!");
+      if (player.type === "bot") {
+        if (this.game.cardsToBeat.length > 0 ) {
+          Maija.raiseCards(this.game, player, this.game.cardsToBeat);
+        }
+        Maija.nextTurn(this.game);
       }
       
       // state progression rules..
       if (this.game.turnPlayer !== this.playerId) {
+        console.log("ja vaihtuu!");
         this.turnOver=true;
       }
 

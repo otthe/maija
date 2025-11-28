@@ -9,6 +9,19 @@ import Odex from './odex.js';
 import { StartGameState } from './StartGameState.js';
 import { StateMachine } from './StateMachine.js';
 
+
+export function debug() {
+  //https://stackoverflow.com/questions/1340872/how-to-get-javascript-caller-function-line-number-and-caller-source-url
+  function getErrorObject(){
+    try { throw Error('') } catch(err) { return err; }
+  }
+  var err = getErrorObject();
+  var caller_line = err.stack.split("\n")[4];
+  var index = caller_line.indexOf("at ");
+  var clean = caller_line.slice(index+2, caller_line.length);
+  console.log(clean);
+}
+
 export const config = {
   width: 960,
   height: 540, /*640*/
@@ -235,6 +248,7 @@ function setCardVisibleCallback(rank, suit) {
   console.log("shoul never go here, right?");
 }
 
+//real one in Maija-module? this for debugging
 function nextTurn() {
   return gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;
 }
@@ -311,6 +325,9 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     layers[2].ctx.fillStyle = "#fff";
     layers[2].ctx.fillText(sm.current.constructor.name, 32,32);
+
+    layers[2].ctx.fillText(gameData.players[gameData.turnPlayer].playerName, 32,64);
+    if(gameData.dealedBy) layers[2].ctx.fillText(gameData.dealedBy.playerName, 32,96);
 
   });
 
@@ -429,108 +446,15 @@ function clickDealButton(player, nextPlayer, mouseRect, selectedCards) {
   const dealButton = gameData.dealButton;
   const dealButtonRect = {x: dealButton.x, y: dealButton.y, w: dealButton.w, h: dealButton.h};
   if (dealButton && dealButton.active && Collision.rect(mouseRect, dealButtonRect)) {
-    if (selectedCards.length > 0) {
-      player.hand = player.hand.filter((card) => !card.selected);
-      gameData.cardsToBeat = selectedCards;
-
-      selectedCards.forEach((card) => {
-        const animation = {
-          sx: card.x,
-          sy: card.y,
-          dx: nextPlayer.x,
-          dy: nextPlayer.y,
-          card: card
-        }
-
-        console.log(animation);
-
-        eq.emit({type: "WAIT", ms: config.dealCardDelay});
-        eq.emit({type: "DEAL_CARD", animation: animation });
-      });
-
-      while (player.hand.length < 5 && gameData.deck.length > 0 ){
-        const card = CardUtil.draw(gameData.deck);
-        player.hand.push(new Card(
-          player.game,
-          card.rank,
-          card.suit,
-          card.value,
-          player.x,
-          player.y
-        ));
-
-        const animation = {
-          sx: Math.floor(config.width/2),
-          sy: Math.floor(config.height/2),
-          dx: player.x,
-          dy: player.y,
-          card: card
-        }
-
-        eq.emit({type: "WAIT", ms: config.dealCardDelay});
-        eq.emit({type: "DEAL_CARD", animation: animation });
-      }
-      gameData.selectedCard=null; 
-      gameData.selectedRival=null;
-      gameData.dealedBy=player;
-      nextTurn();
-    } else {
-      eq.emit({ type: "SEND_MESSAGE", msg: "You need to select cards!"});
-    }
+    Maija.dealCards(gameData, player, nextPlayer, selectedCards);
   }
 }
-
-// function raiseCards(game, player, ctb) {
-//   for (let i = 0; i < ctb.length; i++) {
-//     const card = ctb[i];
-//     card.isVisible=false;
-//     player.hand.push(card);
-
-//     const animation = {
-//       sx: Math.floor(config.width/2),
-//       sy: Math.floor(config.height/2),
-//       dx: player.x,
-//       dy: player.y,
-//       card: card
-//     }
-
-//     eq.emit({type: "WAIT", ms: config.dealCardDelay});
-//     eq.emit({type: "DEAL_CARD", animation: animation });
-//   }
-//   game.cardsToBeat=[];
-//   game.selectedCard=null; 
-//   game.selectedRival=null;
-
-//   console.log("contains: " + game.cardsToBeat.length);
-// }
 
 function clickRaiseButton(player, mouseRect) {
   const raiseButton = gameData.raiseButton;
   const raiseButtonRect = {x: raiseButton.x, y: raiseButton.y, w: raiseButton.w, h: raiseButton.h};
   if (raiseButton && raiseButton.active && Collision.rect(mouseRect, raiseButtonRect)) {
     console.log("raise butotn clcik!");
-
     Maija.raiseCards(gameData, player, gameData.cardsToBeat);
-    // for (let i = 0; i < gameData.cardsToBeat.length; i++) {
-    //   const card = gameData.cardsToBeat[i];
-    //   card.isVisible=false;
-    //   player.hand.push(card);
-
-    //   const animation = {
-    //     sx: Math.floor(config.width/2),
-    //     sy: Math.floor(config.height/2),
-    //     dx: player.x,
-    //     dy: player.y,
-    //     card: card
-    //   }
-
-    //   eq.emit({type: "WAIT", ms: config.dealCardDelay});
-    //   eq.emit({type: "DEAL_CARD", animation: animation });
-    // }
-    // gameData.cardsToBeat=[];
-    // gameData.selectedCard=null; 
-    // gameData.selectedRival=null;
-
-    // console.log("contains: " + gameData.cardsToBeat.length);
   }
 }

@@ -127,5 +127,8 @@ export default class Player {
         //c.render();
       }
     }
+
+    this.layer.ctx.fillStyle="#fff";
+    this.layer.ctx.fillText(`Kortit: ${this.hand.length}`, this.x, this.y+config.slotHeight-16);
   }
 }

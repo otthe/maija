@@ -1,3 +1,5 @@
+import { Card } from "./Card.js";
+import { CardUtil } from "./CardUtil.js";
 import { config, eq } from "./game.js";
 
 function removeInstance(arr, instance) {
@@ -50,7 +52,7 @@ export const Maija = {
         dy: player.y,
         card: card
       }
-
+  
       eq.emit({type: "WAIT", ms: config.dealCardDelay});
       eq.emit({type: "DEAL_CARD", animation: animation });
     }
@@ -59,5 +61,60 @@ export const Maija = {
     game.selectedRival=null;
 
     console.log("contains: " + game.cardsToBeat.length);
+  },
+
+  dealCards(game, player, nextPlayer, selectedCards) {
+    if (selectedCards.length > 0) {
+      player.hand = player.hand.filter((card) => !card.selected);
+      game.cardsToBeat = selectedCards;
+
+      selectedCards.forEach((card) => {
+        const animation = {
+          sx: card.x,
+          sy: card.y,
+          dx: nextPlayer.x,
+          dy: nextPlayer.y,
+          card: card
+        }
+
+        console.log(animation);
+
+        eq.emit({type: "WAIT", ms: config.dealCardDelay});
+        eq.emit({type: "DEAL_CARD", animation: animation });
+      });
+
+      while (player.hand.length < 5 && game.deck.length > 0 ){
+        const card = CardUtil.draw(game.deck);
+        player.hand.push(new Card(
+          player.game,
+          card.rank,
+          card.suit,
+          card.value,
+          player.x,
+          player.y
+        ));
+
+        const animation = {
+          sx: Math.floor(config.width/2),
+          sy: Math.floor(config.height/2),
+          dx: player.x,
+          dy: player.y,
+          card: card
+        }
+
+        eq.emit({type: "WAIT", ms: config.dealCardDelay});
+        eq.emit({type: "DEAL_CARD", animation: animation });
+      }
+      game.selectedCard=null; 
+      game.selectedRival=null;
+      game.dealedBy=player;
+      this.nextTurn(game);
+    } else {
+      eq.emit({ type: "SEND_MESSAGE", msg: "You need to select cards!"});
+    }
+  },
+
+  nextTurn(game) {
+    return game.turnPlayer = (game.turnPlayer + 1) % game.players.length;
   }
 }
