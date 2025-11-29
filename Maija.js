@@ -4,33 +4,45 @@ import { config, eq } from "./game.js";
 import { Util } from "./Util.js";
 
 export const Maija = {
-  //rework this for player only???
   evaluate(card, rival, player, game) {
+    const trumpSuit = game.trumpCard.suit;
+
     if (!card || !rival) {
       console.log(`cant compare card: ${card} and rival: ${rival}!`);
-      return;
+      return false;
     }
-    console.log(`card: ${card} - rival: ${rival} evaluated!`);
-    Util.removeInstance(player.hand, card);
-    const cardAnimation = {
-      sx:card.x,
-      sy:card.y,
-      dx:config.width-32,
-      dy:0
-    }
-    eq.emit({type: "DISCARD_CARD", animation:cardAnimation});
-
-    Util.removeInstance(game.cardsToBeat, rival);
-    const rivalAnimation = {
-      sx:rival.x,
-      sy:rival.y,
-      dx:config.width-32,
-      dy:0
+    if (this.isQueenOfSpades(rival)) {
+      eq.emit({type:"SEND_MESSAGE", msg: "Patarouvaa ei voi kaataa!"});
+      return false;
     }
 
-    eq.emit({type: "WAIT", ms: 200});
-    eq.emit({type: "DISCARD_CARD", animation:rivalAnimation});
+    if (this.isQueenOfSpades(card)) {
+      eq.emit({type:"SEND_MESSAGE", msg: "Patarouvalla ei voi kaataa!"});
+      return false;
+    }
+    
+    // both are trump suited so only higher card can beat
+    if (card.suit === trumpSuit && rival.suit === trumpSuit) {
+      if (card.value > rival.value) {
+        this.discardPair(card, player.hand, rival, game.cardsToBeat);
+      }
+    } 
+    // only card is trump suited so anything can beat a rival
+    else if (card.suit === trumpSuit && rival.suit !== trumpSuit) {
+      eq.emit({type: "SEND_MESSAGE", msg: `${player.playerName} kaataa valtilla!`});
+      this.discardPair(card, player.hand, rival, game.cardsToBeat);
+    }
+    // both are same suited but not trump suited so again, only higher card can beat
+    else if(card.suit === rival.suit) {
+      if(card.value>rival.value) {
+        this.discardPair(card, player.hand, rival, game.cardsToBeat);
+      }
+    }
 
+  },
+
+  isQueenOfSpades(card) {
+    return card.suit === "Spades" && card.rank === "Q";
   },
 
   discardPair(card, hand, rival, ctb){
@@ -90,6 +102,12 @@ export const Maija = {
 
   dealCards(game, player, nextPlayer, selectedCards) {
     if (selectedCards.length > 0) {
+
+      if (selectedCards.length > nextPlayer.hand.length) {
+        eq.emit({type:"SEND_MESSAGE", msg:"Et voi lyödä enemmän kortteja kuin seuraavalla pelaajalla on kädessä!"});
+        return false;
+      }
+
       player.hand = player.hand.filter((card) => !card.selected);
       game.cardsToBeat = selectedCards;
 
@@ -141,6 +159,10 @@ export const Maija = {
 
   nextTurn(game) {
     return game.turnPlayer = (game.turnPlayer + 1) % game.players.length;
+  },
+
+  announceWinner(game) {
+    
   }
 
 }

@@ -14,7 +14,7 @@ export const CardUtil = {
       { rank: "10", value: 10 },
       { rank: "J", value: 11 },
       { rank: "Q", value: 12 },
-      { rank: "T", value: 13 },
+      { rank: "K", value: 13 },
     ];
   
     const deck = [];

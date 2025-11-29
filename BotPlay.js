@@ -36,8 +36,7 @@ function suitWithMostCards(separated) {
 function naiveBeat(rival,hand,separated,ctb, trumpSuit){
   const rivalKey=`${rival.suit}-${rival.rank}`;
   // special case for queen of spades
-  if (rival.suit === "Spades" && rival.rank === "Q") {
-    console.log("Queen of Spades cannot be beaten!");
+  if(Maija.isQueenOfSpades(rival)) {
     return false;
   }
 

@@ -16,13 +16,18 @@ export class PlayTurnState extends State {
   enter() {
     console.log("[PlayTurnState]");
     const player = this.game.players[this.game.turnPlayer];
-    // const nextPlayer = this.game.players[(this.game.turnPlayer + 1) % this.game.players.length];
-    if (player.type === "bot") {
-      eq.emit({type: "WAIT", ms: 20});
-      eq.emit({type: "BOT_PLAY", callback: (() => {        
-        botPlay(this.game);
-      })});
+
+    if (player.hand.length === 0 && this.game.deck.length === 0) {
+      this.turnOver=true;
+    } else {
+      if (player.type === "bot") {
+        eq.emit({type: "WAIT", ms: 20});
+        eq.emit({type: "BOT_PLAY", callback: (() => {        
+          botPlay(this.game);
+        })});
+      }
     }
+
   }
 
   update(dt) {
