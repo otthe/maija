@@ -397,7 +397,7 @@ document.addEventListener("DOMContentLoaded", async function() {
       clickRaiseButton(player, mouseRect);
     }
 
-    console.log(`Click at (${gameData.mouseX}, ${gameData.mouseY})`);
+    //console.log(`Click at (${gameData.mouseX}, ${gameData.mouseY})`);
   });
 
   // resizeGame();
@@ -415,7 +415,6 @@ function resizeGame() {
   gameRoot.style.transformOrigin = "top left";
   gameRoot.style.transform = `scale(${scale})`;
 
-  // center the game if you want
   gameRoot.style.position = "absolute";
   gameRoot.style.left = `${(window.innerWidth - config.width * scale) / 2}px`;
   gameRoot.style.top  = `${(window.innerHeight - config.height * scale) / 2}px`;

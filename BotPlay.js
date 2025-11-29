@@ -20,6 +20,19 @@ function separateCardsBySuit(hand) {
   return separated;
 }
 
+function suitWithMostCards(separated) {
+  let maxSuit = null;
+  let maxCount = -1;
+
+  for (const suit in separated) {
+    if (separated[suit].length > maxCount) {
+      maxCount = separated[suit].length;
+      maxSuit = suit;
+    }
+  }
+  return maxSuit;
+}
+
 function naiveBeat(rival,hand,separated,ctb, trumpSuit){
   const rivalKey=`${rival.suit}-${rival.rank}`;
   // special case for queen of spades
@@ -63,6 +76,37 @@ function naiveBeat(rival,hand,separated,ctb, trumpSuit){
   return false;
 }
 
+
+function naiveDeal(hand) {
+  const separated=separateCardsBySuit(hand);
+  const maxSuit = suitWithMostCards(separated);
+
+  const npc =2; //next player card amount
+  console.log(separated[maxSuit]);
+
+  let selectedCards=[];
+
+  let dealed=0;
+  while(dealed < npc && dealed < separated[maxSuit].length) {
+    selectedCards.push(separated[maxSuit][dealed]);
+    dealed++;
+  }
+
+  //toggle the selection on real hand cards -- not in the copied 'separated' -object
+  for (let i = 0; i < hand.length; i++) {
+    const card=hand[i];
+    card.selected=false;//make sure that cards are de-selected by default
+    for (let j=0; j < selectedCards.length; j++) {
+      const fakeSelectedCard=selectedCards[j];
+      if (card.suit === fakeSelectedCard.suit && card.rank === fakeSelectedCard.rank) {
+        card.selected = true;
+      }
+    }
+  }
+
+  return hand;
+}
+
 export function botPlay(game) {
   const player=game.players[game.turnPlayer];
   const nextPlayer=game.players[(game.turnPlayer + 1) % game.players.length];
@@ -81,7 +125,7 @@ export function botPlay(game) {
   if (ctb.length===0) {
     // change later
     if (hand.length>0) {
-      hand[0].selected = true;
+      naiveDeal(hand);
       const selectedCards = hand.filter((card) => card.selected);
       Maija.dealCards(game, player, nextPlayer, selectedCards);
     }

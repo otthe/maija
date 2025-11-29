@@ -51,6 +51,7 @@ class Card {
     this.value=value;
     this.rank=rank;
     this.suit=suit;
+    this.selected=false;
   }
 }
 
@@ -127,11 +128,57 @@ function beatCard(rival, hand, separated,ctb) {
   return false;
 }
 
+function suitWithMostCards(separated) {
+  let maxSuit = null;
+  let maxCount = -1;
+
+  for (const suit in separated) {
+    if (separated[suit].length > maxCount) {
+      maxCount = separated[suit].length;
+      maxSuit = suit;
+    }
+  }
+  return maxSuit;
+}
+
+function naiveDeal(hand) {
+  const separated=separateCardsBySuit(hand);
+  const maxSuit = suitWithMostCards(separated);
+
+  const npc =2; //next player card amount
+  console.log(separated[maxSuit]);
+
+  let selectedCards=[];
+
+  let dealed=0;
+  while(dealed < npc && dealed < separated[maxSuit].length) {
+    selectedCards.push(separated[maxSuit][dealed]);
+    dealed++;
+  }
+
+  //toggle the selection on real hand cards -- not in the copied 'separated' -object
+  for (let i = 0; i < hand.length; i++) {
+    const card=hand[i];
+    for (let j=0; j < selectedCards.length; j++) {
+      const fakeSelectedCard=selectedCards[j];
+      if (card.suit === fakeSelectedCard.suit && card.rank === fakeSelectedCard.rank) {
+        card.selected = true;
+      }
+    }
+  }
+
+  console.log("...........................");
+  console.log(hand);
+  return selectedCards;
+}
+
 function root(hand, ctb) {
   const rivals = [...ctb].sort((a,b) => a.value - b.value);
-  for (const rival of rivals) {
-    const separated = separateCardsBySuit(hand);
-    beatCard(rival, hand, separated, ctb);
+  if (ctb.length>0) {
+    for (const rival of rivals) {
+      const separated = separateCardsBySuit(hand);
+      beatCard(rival, hand, separated, ctb);
+    }
   }
 
   console.log("Remaining in hand:", hand.length);
@@ -139,6 +186,7 @@ function root(hand, ctb) {
 
   if (ctb.length === 0) {
     console.log("You can deal!");
+    naiveDeal(hand);
   } else {
     console.log("You have to raise! :/");
   }
@@ -153,11 +201,11 @@ for (let i=0; i<5;i++) {
   hand.push(new Card(c.value, c.rank, c.suit));
 }
 
-ctb.push(new Card(9, "9", "Spades" ));
-ctb.push(new Card(5, "5", "Spades" ));
-ctb.push(new Card(7, "7", "Spades" ));
-ctb.push(new Card(10, "10", "Spades" ));
-ctb.push(new Card(14, "A", "Spades" ));
+// ctb.push(new Card(9, "9", "Spades" ));
+// ctb.push(new Card(5, "5", "Spades" ));
+// ctb.push(new Card(7, "7", "Spades" ));
+// ctb.push(new Card(10, "10", "Spades" ));
+// ctb.push(new Card(14, "A", "Spades" ));
 //ctb.push(new Card(12, "Q", "Spades" ));
 
 
