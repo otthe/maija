@@ -29,6 +29,31 @@ function deciceDealStrategy(hand) {
 
 }
 
+//what can this card beat from ctb?
+function createBeatPool(card, ctb) {
+  const pool = {
+    card:card,
+    rivalCards: []
+  }
+
+  return pool;
+}
+
+function separateCardsBySuit(hand) {
+  const separated = {
+    Spades: [],
+    Hearts: [],
+    Clubs: [],
+    Diamonds: [],
+  }
+  for(let i=0; i < hand.length; i++) {
+    const c=hand[i];
+    separated[c.suit].push(c);
+  }
+
+  return separated;
+}
+
           // if (this.game.cardsToBeat.length > 0 ) {
           //   Maija.raiseCards(this.game, player, this.game.cardsToBeat);
           // } else {
@@ -45,6 +70,8 @@ export function botPlay(game) {
   const nextPlayer = game.players[(game.turnPlayer + 1) % game.players.length];
   const hand = player.hand;
   const trumpSuit = game.trumpCard.suit;
+  console.log(trumpSuit);
+  console.log(separateCardsBySuit(hand));
 
   if (ctb.length > 0) {
     //decideRaiseStrategy(ctb, hand, trumpSuit);

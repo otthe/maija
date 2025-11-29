@@ -441,9 +441,11 @@ function clickBeatableCards(player, mouseRect) {
 
 function allowOneSuitSelected(player, suit, selected) {
   const selectedCards = player.hand.filter((card) => card.selected);
-  if (selectedCards.length<1){
+  // on/off toggle on first selected card
+  if (selectedCards.length<1){ 
     return !selected;
   } else {
+    // if more than one cards selected, allow toggle only if suit matches the suit of other selected cards
     for(let i = 0; i < player.hand.length; i++) {
       const c=player.hand[i];
       if (c.selected && c.suit === suit) {
@@ -451,7 +453,7 @@ function allowOneSuitSelected(player, suit, selected) {
       }
     }
   }
-
+  //multiple suits cant be selected
   eq.emit({type:"SEND_MESSAGE", msg: "Selected cards must be of same suit!"});
   return false;
 }
