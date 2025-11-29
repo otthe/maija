@@ -166,7 +166,6 @@ function updateTop(layer, dt) {
     animation.update(dt);
   });
 
-
   gameData.beatArea.update(dt);
   gameData.dealButton.update(dt);
   gameData.raiseButton.update(dt);
@@ -256,7 +255,6 @@ function setCardVisibleCallback(rank, suit) {
       }
     }
   }
-  console.log("shoul never go here, right?");
 }
 
 function preprocessBackground() {
@@ -441,6 +439,23 @@ function clickBeatableCards(player, mouseRect) {
   }
 }
 
+function allowOneSuitSelected(player, suit, selected) {
+  const selectedCards = player.hand.filter((card) => card.selected);
+  if (selectedCards.length<1){
+    return !selected;
+  } else {
+    for(let i = 0; i < player.hand.length; i++) {
+      const c=player.hand[i];
+      if (c.selected && c.suit === suit) {
+        return !selected;
+      }
+    }
+  }
+
+  eq.emit({type:"SEND_MESSAGE", msg: "Selected cards must be of same suit!"});
+  return false;
+}
+
 function clickHandCards(player, mouseRect) {
   for (let i = 0; i < player.hand.length; i++) {
     const c = player.hand[i];
@@ -448,7 +463,8 @@ function clickHandCards(player, mouseRect) {
     if (Collision.rect(mouseRect, cardRect) && c.isVisible) {
       if (gameData.cardsToBeat.length === 0) {
         // if no cards to beat, can select multiple
-        c.selected = !c.selected;
+        //c.selected = !c.selected;
+        c.selected=allowOneSuitSelected(player, c.suit, c.selected);
       } else {
         // if beating, only select one
         gameData.selectedCard = c;
