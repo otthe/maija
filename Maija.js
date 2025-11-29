@@ -1,23 +1,17 @@
 import { Card } from "./Card.js";
 import { CardUtil } from "./CardUtil.js";
 import { config, eq } from "./game.js";
-
-function removeInstance(arr, instance) {
-  const i = arr.indexOf(instance);
-  if (i !== -1) {
-    arr.splice(i, 1);
-  }
-}
+import { Util } from "./Util.js";
 
 export const Maija = {
+  //rework this for player only???
   evaluate(card, rival, player, game) {
     if (!card || !rival) {
       console.log(`cant compare card: ${card} and rival: ${rival}!`);
       return;
-
     }
     console.log(`card: ${card} - rival: ${rival} evaluated!`);
-    removeInstance(player.hand, card);
+    Util.removeInstance(player.hand, card);
     const cardAnimation = {
       sx:card.x,
       sy:card.y,
@@ -26,7 +20,36 @@ export const Maija = {
     }
     eq.emit({type: "DISCARD_CARD", animation:cardAnimation});
 
-    removeInstance(game.cardsToBeat, rival);
+    Util.removeInstance(game.cardsToBeat, rival);
+    const rivalAnimation = {
+      sx:rival.x,
+      sy:rival.y,
+      dx:config.width-32,
+      dy:0
+    }
+
+    eq.emit({type: "WAIT", ms: 200});
+    eq.emit({type: "DISCARD_CARD", animation:rivalAnimation});
+
+  },
+
+  discardPair(card, hand, rival, ctb){
+    if (!card || !rival) {
+      console.log(`cant compare card: ${card} and rival: ${rival}!`);
+      return;
+    }
+
+    console.log(`card: ${card} - rival: ${rival} discarded!`);
+    Util.removeInstance(hand, card);
+    const cardAnimation = {
+      sx:card.x,
+      sy:card.y,
+      dx:config.width-32,
+      dy:0
+    }
+    eq.emit({type: "DISCARD_CARD", animation:cardAnimation});
+
+    Util.removeInstance(ctb, rival);
     const rivalAnimation = {
       sx:rival.x,
       sy:rival.y,

@@ -1,44 +1,6 @@
 import { config, eq, odex, sm } from "./game.js";
 import { Maija } from "./Maija.js";
 
-function raiseAll(){
-
-}
-
-function raiseSome(){
-
-}
-
-function beatAll() {
-
-}
-
-function decideRaiseStrategy(ctb, hand, trumpSuit) {
-  const suit = ctb[0].suit;
-  const availableStrategies={raiseAll: true, discardAll: false, raiseSome: false};
-  const potentialSameSuit = hand.filter((card) => {card.suit === suit});
-  const potentialTrumpSuit = hand.filter((card) => {card.suit === suit && suit === trumpSuit});
-
-  for (let i = 0; i < ctb.length; i++) {
-    const c = ctb[i];
-    
-  }
-}
-
-function deciceDealStrategy(hand) {
-
-}
-
-//what can this card beat from ctb?
-function createBeatPool(card, ctb) {
-  const pool = {
-    card:card,
-    rivalCards: []
-  }
-
-  return pool;
-}
-
 function separateCardsBySuit(hand) {
   const separated = {
     Spades: [],
@@ -51,38 +13,80 @@ function separateCardsBySuit(hand) {
     separated[c.suit].push(c);
   }
 
+  for (const suit in separated) {
+    separated[suit].sort((a, b) => a.value - b.value);
+  }
+
   return separated;
 }
 
-          // if (this.game.cardsToBeat.length > 0 ) {
-          //   Maija.raiseCards(this.game, player, this.game.cardsToBeat);
-          // } else {
-          //   if (player.hand.length > 0) {
-          //     player.hand[0].selected = true;
-          //     const selectedCards = player.hand.filter((card) => card.selected);
-          //     Maija.dealCards(this.game, player, nextPlayer, selectedCards);
-          //   }  
-          // }
+function naiveBeat(rival,hand,separated,ctb, trumpSuit){
+  const rivalKey=`${rival.suit}-${rival.rank}`;
+  // special case for queen of spades
+  if (rival.suit === "Spades" && rival.rank === "Q") {
+    console.log("Queen of Spades cannot be beaten!");
+    return false;
+  }
+
+  // beat with same suit
+  const sameSuitCards = separated[rival.suit]
+    .filter(c => c.value > rival.value)
+    .sort((a,b) => a.value - b.value);
+
+  if (sameSuitCards.length > 0) {
+    const card = sameSuitCards[0];
+    const cardKey = `${card.suit}-${card.rank}`;
+
+    Maija.discardPair(card, hand, rival, ctb);
+
+    console.log(`${cardKey} beats ${rivalKey}`);
+    return true;
+  }
+
+  // if same suit failed --> try with trump cards
+  // const trumpSuit = trumpCard.suit;
+  const trumpCards = separated[trumpSuit]
+    .filter(c => c.value > rival.value)
+    .sort((a,b) => a.value - b.value);
+
+  if (trumpCards.length > 0) {
+    const card = trumpCards[0];
+    const cardKey = `${card.suit}-${card.rank}`;
+;
+    Maija.discardPair(card, hand, rival, ctb);
+    console.log(`TRUMP! ${cardKey} beats ${rivalKey}`);
+    return true;
+  }
+
+  // Nothing could beat it
+  console.log(`${rivalKey} could not be beaten`);
+  return false;
+}
 
 export function botPlay(game) {
-  const ctb = game.cardsToBeat;
-  const player = game.players[game.turnPlayer];
-  const nextPlayer = game.players[(game.turnPlayer + 1) % game.players.length];
-  const hand = player.hand;
-  const trumpSuit = game.trumpCard.suit;
-  console.log(trumpSuit);
-  console.log(separateCardsBySuit(hand));
+  const player=game.players[game.turnPlayer];
+  const nextPlayer=game.players[(game.turnPlayer + 1) % game.players.length];
+  const hand=player.hand;
+  const ctb=game.cardsToBeat;
+  const trumpSuit=game.trumpCard.suit;
+  const rivals = [...ctb].sort((a,b) => a.value - b.value);
+  //try to beat
+  if(ctb.length>0) {
+    for(const rival of rivals) {
+      const separated = separateCardsBySuit(hand);
+      naiveBeat(rival, hand, separated, ctb, trumpSuit);
+    }
+  }
 
-  if (ctb.length > 0) {
-    //decideRaiseStrategy(ctb, hand, trumpSuit);
-    Maija.raiseCards(game, player, ctb);
-  } else {
-    //decideDealStrategy(hand);
-    if (hand.length > 0) {
+  if (ctb.length===0) {
+    // change later
+    if (hand.length>0) {
       hand[0].selected = true;
       const selectedCards = hand.filter((card) => card.selected);
       Maija.dealCards(game, player, nextPlayer, selectedCards);
     }
+  }else {
+    Maija.raiseCards(game, player, ctb);
   }
 }
 

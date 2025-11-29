@@ -83,6 +83,12 @@ function removeInstance(arr, instance) {
 function beatCard(rival, hand, separated,ctb) {
   const rivalKey = `${rival.suit}-${rival.rank}`;
 
+  // special case for queen of spades
+  if (rival.suit === "Spades" && rival.rank === "Q") {
+    console.log("Queen of Spades cannot be beaten!");
+    return false;
+  }
+
   // beat with same suit
   const sameSuitCards = separated[rival.suit]
     .filter(c => c.value > rival.value)
@@ -147,11 +153,12 @@ for (let i=0; i<5;i++) {
   hand.push(new Card(c.value, c.rank, c.suit));
 }
 
-ctb.push(new Card(9, "9", "Clubs" ));
-ctb.push(new Card(5, "5", "Clubs" ));
-ctb.push(new Card(7, "7", "Clubs" ));
-ctb.push(new Card(10, "10", "Clubs" ));
-ctb.push(new Card(14, "A", "Clubs" ));
+ctb.push(new Card(9, "9", "Spades" ));
+ctb.push(new Card(5, "5", "Spades" ));
+ctb.push(new Card(7, "7", "Spades" ));
+ctb.push(new Card(10, "10", "Spades" ));
+ctb.push(new Card(14, "A", "Spades" ));
+//ctb.push(new Card(12, "Q", "Spades" ));
 
 
 //console.log(deck);
