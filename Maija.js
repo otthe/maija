@@ -157,6 +157,8 @@ export const Maija = {
       game.selectedCard=null; 
       game.selectedRival=null;
       game.dealedBy=player;
+
+      this.isOut(player, game);
       game.turnPlayer = this.nextTurn(game);
     } else {
       eq.emit({ type: "SEND_MESSAGE", msg: "You need to select cards!"});
@@ -181,7 +183,7 @@ export const Maija = {
   },
 
   isOut(player, game) {
-    if (player.hand.length === 0 && game.deck.length === 0 && game.cardsToBeat.length === 0) {
+    if (player.hand.length === 0 && game.deck.length === 0) {
       player.isPlaying=false;
     }
   }

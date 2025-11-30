@@ -82,6 +82,36 @@ function naiveBeat(rival,hand,separated,ctb, trumpSuit){
 }
 
 
+// function naiveDeal(hand) {
+//   const separated=separateCardsBySuit(hand);
+//   const maxSuit = suitWithMostCards(separated);
+
+//   const npc =2; //next player card amount
+//   console.log(separated[maxSuit]);
+
+//   let selectedCards=[];
+
+//   let dealed=0;
+//   while(dealed < npc && dealed < separated[maxSuit].length) {
+//     selectedCards.push(separated[maxSuit][dealed]);
+//     dealed++;
+//   }
+
+//   //toggle the selection on real hand cards -- not in the copied 'separated' -object
+//   for (let i = 0; i < hand.length; i++) {
+//     const card=hand[i];
+//     card.selected=false;//make sure that cards are de-selected by default
+//     for (let j=0; j < selectedCards.length; j++) {
+//       const fakeSelectedCard=selectedCards[j];
+//       if (card.suit === fakeSelectedCard.suit && card.rank === fakeSelectedCard.rank) {
+//         card.selected = true;
+//       }
+//     }
+//   }
+
+//   return hand;
+// }
+
 function naiveDeal(hand) {
   const separated=separateCardsBySuit(hand);
   const maxSuit = suitWithMostCards(separated);
@@ -134,6 +164,7 @@ export function botPlay(game) {
       const selectedCards = hand.filter((card) => card.selected);
       Maija.dealCards(game, player, nextPlayer, selectedCards);
     } else {
+      Maija.isOut(player, game);
       eq.emit({type: "SEND_MESSAGE", msg: `${player} on ulkona!`});
     }
   }else {
