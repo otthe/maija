@@ -29,7 +29,7 @@ export class BeatArea {
   }
 
   render() {
-    if (this.game.cardsToBeat.length > 0 /*&& sm.current.constructor.name === "PlayTurnState"*/ ) {
+    if (this.game.cardsToBeat.length > 0 ) { /*&& sm.current.constructor.name === "PlayTurnState"*/
       const w = config.width;
       this.layer.ctx.fillStyle = "rgba(0,0,0,0.5)";
       this.layer.ctx.fillRect(this.x, this.y, this.w, this.h);
@@ -38,7 +38,7 @@ export class BeatArea {
         c.render();
       });
 
-      if (this.game.dealedBy) {
+      if (this.game.dealedBy && this.game.players[this.game.turnPlayer].playerName) {
         this.layer.ctx.fillStyle="#fff";
         const str = `${this.game.dealedBy.playerName} lyö pelaajalle ${this.game.players[this.game.turnPlayer].playerName}`;
         this.layer.ctx.fillText(str, this.x, this.y+16);

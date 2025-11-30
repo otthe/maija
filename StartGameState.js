@@ -41,6 +41,8 @@ export class StartGameState extends State {
 
     this.game.discardedCards = 0;
 
+    this.game.winOrder=[];
+
     this.game.botObjects = odex.G.layers[0].objects;
     this.game.midObjects = odex.G.layers[1].objects;
     this.game.topObjects = odex.G.layers[2].objects;

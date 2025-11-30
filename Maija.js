@@ -39,8 +39,16 @@ export const Maija = {
       }
     }
 
+    //if player has beaten every card, fill the hand before dealing to next player
+    if (game.cardsToBeat.length === 0) {
+      this.draw(player, game);
+    }
+
     // check if player is out
     this.isOut(player, game);
+    if(!player.isPlaying) {
+      game.turnPlayer=this.nextTurn(game);
+    }
   },
 
   isQueenOfSpades(card) {
@@ -134,28 +142,31 @@ export const Maija = {
         eq.emit({type: "DEAL_CARD", animation: animation });
       });
 
-      while (player.hand.length < 5 && game.deck.length > 0 ){
-        const card = CardUtil.draw(game.deck);
-        player.hand.push(new Card(
-          player.game,
-          card.rank,
-          card.suit,
-          card.value,
-          player.x,
-          player.y
-        ));
+      // while (player.hand.length < 5 && game.deck.length > 0 ){
+      //   const card = CardUtil.draw(game.deck);
+      //   player.hand.push(new Card(
+      //     player.game,
+      //     card.rank,
+      //     card.suit,
+      //     card.value,
+      //     player.x,
+      //     player.y
+      //   ));
 
-        const animation = {
-          sx: Math.floor(config.width/2),
-          sy: Math.floor(config.height/2),
-          dx: player.x,
-          dy: player.y,
-          card: card
-        }
+      //   const animation = {
+      //     sx: Math.floor(config.width/2),
+      //     sy: Math.floor(config.height/2),
+      //     dx: player.x,
+      //     dy: player.y,
+      //     card: card
+      //   }
 
-        eq.emit({type: "WAIT", ms: config.dealCardDelay});
-        eq.emit({type: "DEAL_CARD", animation: animation });
-      }
+      //   eq.emit({type: "WAIT", ms: config.dealCardDelay});
+      //   eq.emit({type: "DEAL_CARD", animation: animation });
+      // }
+
+      Maija.draw(player, game);
+
       game.selectedCard=null; 
       game.selectedRival=null;
       game.dealedBy=player;
@@ -187,6 +198,39 @@ export const Maija = {
   isOut(player, game) {
     if (player.hand.length === 0 && game.deck.length === 0) {
       player.isPlaying=false;
+    }
+
+    //what position did player finish at?
+    if (!game.winOrder.includes(player) && !player.isPlaying) {
+      game.winOrder.push(player);
+    }
+
+    console.log("Win order:");
+    console.log(game.winOrder);
+  },
+
+  draw(player, game) {
+    while (player.hand.length < 5 && game.deck.length > 0 ){
+      const card = CardUtil.draw(game.deck);
+      player.hand.push(new Card(
+        player.game,
+        card.rank,
+        card.suit,
+        card.value,
+        player.x,
+        player.y
+      ));
+
+      const animation = {
+        sx: Math.floor(config.width/2),
+        sy: Math.floor(config.height/2),
+        dx: player.x,
+        dy: player.y,
+        card: card
+      }
+
+      eq.emit({type: "WAIT", ms: config.dealCardDelay});
+      eq.emit({type: "DEAL_CARD", animation: animation });
     }
   }
 }

@@ -3,6 +3,7 @@ import { EvaluatePlayState } from "./EvaluatePlayState.js";
 import { eq, config, odex } from "./game.js";
 import { Maija } from "./Maija.js";
 import { State } from "./State.js";
+import { Util } from "./Util.js";
 
 export class PlayTurnState extends State {
   constructor(game,playerId) {
@@ -23,7 +24,7 @@ export class PlayTurnState extends State {
     }
 
     if (player.type === "bot") {
-      eq.emit({type: "WAIT", ms: 20});
+      eq.emit({type: "WAIT", ms: Util.getRandomInt(500, 3000)});
       eq.emit({type: "BOT_PLAY", callback: (() => {        
         botPlay(this.game);
       })});

@@ -8,7 +8,21 @@
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 body {
-  background-color: #dbd6d6;
+  background-color: #3a3232;
+
+  background-color: #081b02;
+  background-image: url("https://www.transparenttextures.com/patterns/handmade-paper.png");
+  /*background-image: url("handmade-paper.png");*/
+}
+
+h1{
+  text-align: center;
+  color:#f8f8f8;
+  background-image: url(art/seamless-wood.jpg);
+  margin:auto;
+  width: max-content;
+  padding:16px;
+  margin-bottom:1rem;
 }
 /*
 html, body {
@@ -23,14 +37,26 @@ html, body {
   display:block;
   margin:auto;
   will-change: transform;
-  /*
+  
   max-width: 960px;
   max-height: 540px;
   width:100%;
-  height: 100%;*/
+  height: 100%;
+
+
+
+
 }
 #gameContainer canvas {
   position:absolute;
+
+
+  /* ✅ Image border setup */
+  border: 16px solid transparent; /* border thickness = space for the image */
+  border-image-source: url("/art/seamless-wood.jpg"); /* change to your image path */
+  border-image-slice: 32;  /* how much of the image edge should be used */
+  border-image-repeat: round; /* or: stretch / repeat / round */
+  border-radius:16px;
 }
 
 canvas {

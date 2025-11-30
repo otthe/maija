@@ -81,37 +81,6 @@ function naiveBeat(rival,hand,separated,ctb, trumpSuit){
   return false;
 }
 
-
-// function naiveDeal(hand) {
-//   const separated=separateCardsBySuit(hand);
-//   const maxSuit = suitWithMostCards(separated);
-
-//   const npc =2; //next player card amount
-//   console.log(separated[maxSuit]);
-
-//   let selectedCards=[];
-
-//   let dealed=0;
-//   while(dealed < npc && dealed < separated[maxSuit].length) {
-//     selectedCards.push(separated[maxSuit][dealed]);
-//     dealed++;
-//   }
-
-//   //toggle the selection on real hand cards -- not in the copied 'separated' -object
-//   for (let i = 0; i < hand.length; i++) {
-//     const card=hand[i];
-//     card.selected=false;//make sure that cards are de-selected by default
-//     for (let j=0; j < selectedCards.length; j++) {
-//       const fakeSelectedCard=selectedCards[j];
-//       if (card.suit === fakeSelectedCard.suit && card.rank === fakeSelectedCard.rank) {
-//         card.selected = true;
-//       }
-//     }
-//   }
-
-//   return hand;
-// }
-
 function naiveDeal(hand, nextPlayer) {
   // const limit = Math.min(opponentCardCount, hand.length);
   // if (limit <= 0) return;
@@ -144,7 +113,7 @@ function naiveDeal(hand, nextPlayer) {
 
 export function botPlay(game) {
   const player=game.players[game.turnPlayer];
-  const nextPlayer=game.players[Maija.nextTurn(game)]; //game.players[(game.turnPlayer + 1) % game.players.length];
+  const nextPlayer=game.players[Maija.nextTurn(game)];
   const hand=player.hand;
   const ctb=game.cardsToBeat;
   const trumpSuit=game.trumpCard.suit || null; // this is only selected after first play turn
@@ -167,13 +136,14 @@ export function botPlay(game) {
       //bot has no cards so check if there is one's to draw - if no take him out of the game
       Maija.isOut(player, game);
       if(!player.isPlaying) {
-        eq.emit({type: "SEND_MESSAGE", msg: `${player} on ulkona!`});
+        eq.emit({type: "SEND_MESSAGE", msg: `${player.playerName} on ulkona!`});
       }
       game.turnPlayer=Maija.nextTurn(game); //turn switch should happen every time
     }
   }else {
     // bot could not beat all the cards so he has to raise the ones left
     Maija.raiseCards(game, player, ctb);
+    Maija.draw(player, game);
   }
 }
 

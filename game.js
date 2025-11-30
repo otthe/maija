@@ -49,7 +49,7 @@ export const odex = new Odex(config.width, config.height);
 const sprites = [
   {name: "spritesheet", src: '/art/spritesheet.png'},
   {name: "players", src: '/art/players.png'},
-  {name: "background", src: '/art/background8.jpg'},
+  {name: "background", src: '/art/background8.jpg'}, //background8.jpg
   {name: "player", src: '/art/player.png'},
 ];
 const sounds = [];
@@ -119,6 +119,8 @@ const DEFAULT_GAME_DATA = {
   midObjects: [],
   topObjects: [],
   animations: [],
+
+  winOrder: [],
 
   mouseX: 0,
   mouseY: 0,
@@ -496,5 +498,6 @@ function clickRaiseButton(player, mouseRect) {
   if (raiseButton && raiseButton.active && Collision.rect(mouseRect, raiseButtonRect)) {
     console.log("raise butotn clcik!");
     Maija.raiseCards(gameData, player, gameData.cardsToBeat);
+    Maija.draw(player, gameData);
   }
 }
