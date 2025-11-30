@@ -8,29 +8,34 @@ function pickPosition(pos, sw, sh) {
     case 0:
       return {
         x: Math.floor(config.width/2-(sw/2)),
-        y: Math.floor(config.height - (sh+pad))
+        y: Math.floor(config.height - (sh+pad)),
+        name: "Sinä"
       }
     case 1:
       return {
         x: Math.floor(0+pad),
-        y: Math.floor(config.height/2 - (sh/2))
+        y: Math.floor(config.height/2 - (sh/2)),
+        name: "Pekka"
       }
     case 2:
       return {
         x: Math.floor(config.width/4-(sw/2)),
-        y: Math.floor(0+pad)
+        y: Math.floor(0+pad),
+        name: "Seppo"
       }
     case 3:
       const offset=config.width/4;
       return {
         x: Math.floor(config.width-offset-(sw/2)),
-        y: Math.floor(0+pad)
+        y: Math.floor(0+pad),
+        name: "Kalevi"
       }
     case 4:
 
       return {
         x: Math.floor(config.width-(sw+pad)),
-        y: Math.floor(config.height/2 - sh/2)
+        y: Math.floor(config.height/2 - sh/2),
+        name: "Martti"
       }
 
     default:
@@ -46,12 +51,12 @@ export default class Player {
     this.position=position;
     this.game = game;
   
-    const {x, y} = pickPosition(position,config.slotWidth, config.slotHeight);
+    const {x, y, name} = pickPosition(position,config.slotWidth, config.slotHeight);
 
     this.x = x;
     this.y = y;
 
-    this.playerName = "Player " + (this.position+1);
+    this.playerName = name;
 
     this.layer = odex.G.layers[1];
 
@@ -62,6 +67,9 @@ export default class Player {
     this.isVisibleCards = false;
 
     this.isPlaying=true;
+
+    this.centerX=Math.floor(this.x+(config.slotWidth/2));
+    this.centerY=Math.floor(this.y+(config.slotHeight/2));
   }
 
   update(dt) {
@@ -113,7 +121,7 @@ export default class Player {
     } else {
       this.layer.ctx.fillStyle = "#fff";
     }
-    this.layer.ctx.fillText(this.playerName, this.x, this.y);
+    this.layer.ctx.fillText(this.playerName, this.centerX, this.y);
  
     if (this.type==="player" && this.isVisibleCards) {
       for (let i = 0; i < this.hand.length; i++) {
@@ -129,6 +137,6 @@ export default class Player {
     }
 
     this.layer.ctx.fillStyle="#fff";
-    this.layer.ctx.fillText(`Kortit: ${this.hand.length}`, this.x, this.y+config.slotHeight-16);
+    this.layer.ctx.fillText(`Kortit: ${this.hand.length}`, this.centerX, this.y+config.slotHeight-16);
   }
 }

@@ -19,13 +19,13 @@ export default class InfoBox {
     this.layer.ctx.fillRect(this.x,this.y, this.w, this.h);
 
     this.layer.ctx.fillStyle="#fff";
-    this.layer.ctx.fillText(this.game.infoMessage, this.x+16, this.y+16);
+    this.layer.ctx.fillText(this.game.infoMessage, Math.floor(this.x+(this.w/2)), this.y+16);
 
     if(this.game.winOrder.length>0) {
       for(let i = 0; i<this.game.winOrder.length; i++) {
         const ranking=this.game.winOrder[i];
         const str = `${i+1} sija: ${ranking.playerName}`;
-        this.layer.ctx.fillText(str, this.x+16, (this.y+32)+(i*16));
+        this.layer.ctx.fillText(str, Math.floor(this.x+(this.w/2)), (this.y+32)+(i*16));
       }
     }
   }

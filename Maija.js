@@ -29,7 +29,7 @@ export const Maija = {
     } 
     // only card is trump suited so anything can beat a rival
     else if (card.suit === trumpSuit && rival.suit !== trumpSuit) {
-      eq.emit({type: "SEND_MESSAGE", msg: `${player.playerName} kaataa valtilla!`});
+      eq.emit({type: "SEND_MESSAGE", msg: `${player.playerName} kaatoi valtilla!`});
       this.discardPair(card, player.hand, rival, game.cardsToBeat);
     }
     // both are same suited but not trump suited so again, only higher card can beat

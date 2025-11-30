@@ -26,11 +26,11 @@ export default class DealButton {
       // this.layer.ctx.fillStyle = "brown";
       // this.layer.ctx.fillRect(this.x, this.y, this.w, this.h);
  
-      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 112, 96, 64, this.x, this.y, this.w, this.h);
 
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 112, 96, 64, this.x, this.y, this.w, this.h);
       this.layer.ctx.fillStyle = "#000";
       const selectedCards = player.hand.filter((card) => card.selected);
-      this.layer.ctx.fillText(`Lyö ${selectedCards.length} korttia`,this.x, this.y+(this.h/2));
+      this.layer.ctx.fillText(`Jaa (${selectedCards.length})`,Math.floor(this.x+(this.w/2)), Math.floor(this.y+(this.h/2)));
     }
   }
 }

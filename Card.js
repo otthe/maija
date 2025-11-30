@@ -1,6 +1,18 @@
 import { Collision } from "./Collision.js";
 import { config, odex } from "./game.js";
 
+export function getCardIconPositions(suit) {
+  if (suit === "Spades") {
+    return {x: 32, y: 96}
+  } else if(suit === "Clubs") {
+    return {x: 48, y: 96}
+  } else if(suit==="Hearts") {
+    return {x: 16, y: 96}
+  }else if(suit==="Diamonds"){
+    return {x: 0, y: 96}
+  }
+}
+
 export class Card {
   constructor(game, rank, suit, value, x, y) {
     this.game=game;
@@ -21,6 +33,10 @@ export class Card {
     this.isVisible = false;
 
     this.isBeatable = false;
+
+    const iconPos=getCardIconPositions(suit);
+    this.ix = iconPos.x;
+    this.iy = iconPos.y;
   }
 
   update(dt) {
@@ -50,9 +66,18 @@ export class Card {
       this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 0, 64, 96, this.x, this.y, config.cardWidth, config.cardHeight);
 
       this.layer.ctx.fillStyle = "#000";
-      this.layer.ctx.fillText(this.suit, this.x, this.y+16);
-      this.layer.ctx.fillText(this.rank, this.x, this.y+32);
-      this.layer.ctx.fillText(this.value, this.x, this.y+48);
+      // this.layer.ctx.fillText(this.suit, this.x, this.y+16);
+      // this.layer.ctx.fillText(this.rank, this.x, this.y+32);
+      // this.layer.ctx.fillText(this.value, this.x, this.y+48);
+
+      //const iconPos=getCardIconPositions(this.suit);
+      const ox=4;
+      const oy=20;
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), this.ix, this.iy, 16, 16, this.x+ox, this.y+oy, 16, 16);
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), this.ix, this.iy, 16, 16, (this.x+config.cardWidth-16)-ox, (this.y+config.cardHeight-16)-oy, 16, 16);
+    
+      this.layer.ctx.fillText(this.rank, this.x+ox+3, this.y+16);
+      this.layer.ctx.fillText(this.rank, (this.x+config.cardWidth-16)-ox+3, this.y+config.cardHeight-4);
     }
 
     if (this.selected || this.game.selectedCard === this || this.game.selectedRival === this) {

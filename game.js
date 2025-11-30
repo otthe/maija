@@ -48,7 +48,6 @@ export const odex = new Odex(config.width, config.height);
 
 const sprites = [
   {name: "spritesheet", src: '/art/spritesheet.png'},
-  {name: "players", src: '/art/players.png'},
   {name: "background", src: '/art/background.png'}, //background8.jpg
   {name: "player", src: '/art/player.png'},
   {name: "bot", src: '/art/enemy.png'},
@@ -303,6 +302,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     layer.ctx.webkitImageSmoothingEnabled = false;
     layer.ctx.mozImageSmoothingEnabled = false;
     layer.ctx.msImageSmoothingEnabled = false;
+
+    layer.ctx.textAlign = "center";
   });
 
   odex.loop();
