@@ -97,13 +97,19 @@ export const Maija = {
     game.dealedBy = null;
 
     console.log("contains: " + game.cardsToBeat.length);
-    this.nextTurn(game);
+    game.turnPlayer = this.nextTurn(game);
   },
 
   dealCards(game, player, nextPlayer, selectedCards) {
     if (selectedCards.length > 0) {
 
       if (selectedCards.length > nextPlayer.hand.length) {
+        console.log("selected:");
+        console.log(selectedCards);
+        console.log("player:");
+        console.log(player);
+        console.log("next player");
+        console.log(nextPlayer);
         eq.emit({type:"SEND_MESSAGE", msg:"Et voi lyödä enemmän kortteja kuin seuraavalla pelaajalla on kädessä!"});
         return false;
       }
@@ -151,18 +157,36 @@ export const Maija = {
       game.selectedCard=null; 
       game.selectedRival=null;
       game.dealedBy=player;
-      this.nextTurn(game);
+      game.turnPlayer = this.nextTurn(game);
     } else {
       eq.emit({ type: "SEND_MESSAGE", msg: "You need to select cards!"});
     }
   },
-
   nextTurn(game) {
-    return game.turnPlayer = (game.turnPlayer + 1) % game.players.length;
+    const players = game.players;
+    const count = players.length;
+  
+    // start checking from the next position
+    let index = (game.turnPlayer + 1) % count;
+  
+    for (let i = 0; i < count; i++) {
+      if (players[index].isPlaying) {
+        //game.turnPlayer = index;
+        return index; //found next active player
+      }
+      index = (index + 1) % count; // move forward
+    }
+  
+    return -1; //no valid playing players
   },
 
-  announceWinner(game) {
-    
+  isOut(player, game) {
+    if (player.hand.length === 0 && game.deck.length === 0 && game.cardsToBeat.length === 0) {
+      player.isPlaying=false;
+    }
   }
-
 }
+  // nextTurn(game) {
+  //   return game.turnPlayer = (game.turnPlayer + 1) % game.players.length;
+  // },
+  

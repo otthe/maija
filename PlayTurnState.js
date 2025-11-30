@@ -17,17 +17,17 @@ export class PlayTurnState extends State {
     console.log("[PlayTurnState]");
     const player = this.game.players[this.game.turnPlayer];
 
-    if (player.hand.length === 0 && this.game.deck.length === 0) {
+    if (!player.isPlaying) {
       this.turnOver=true;
-    } else {
-      if (player.type === "bot") {
-        eq.emit({type: "WAIT", ms: 20});
-        eq.emit({type: "BOT_PLAY", callback: (() => {        
-          botPlay(this.game);
-        })});
-      }
+      return;
     }
 
+    if (player.type === "bot") {
+      eq.emit({type: "WAIT", ms: 20});
+      eq.emit({type: "BOT_PLAY", callback: (() => {        
+        botPlay(this.game);
+      })});
+    }
   }
 
   update(dt) {
@@ -48,12 +48,29 @@ export class PlayTurnState extends State {
   }
 
   nextState() {
-    return new EvaluatePlayState(this.game);
+    return new PlayTurnState(this.game, this.game.turnPlayer);
+    //return new EvaluatePlayState(this.game);
   }
 
   exit() {
     this.game.selectedCard = null;
     this.game.selectedRival = null;
   }
-
 }
+    // if (player.hand.length === 0 && this.game.deck.length === 0) {
+    //   player.isPlaying=false;
+    //   this.turnOver=true;
+    // }
+
+
+    // if (player.hand.length === 0 && this.game.deck.length === 0) {
+    //   player.isPlaying=false;
+    //   this.turnOver=true;
+    // } else {
+    //   if (player.type === "bot") {
+    //     eq.emit({type: "WAIT", ms: 20});
+    //     eq.emit({type: "BOT_PLAY", callback: (() => {        
+    //       botPlay(this.game);
+    //     })});
+    //   }
+    // }

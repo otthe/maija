@@ -60,6 +60,8 @@ export default class Player {
     this.isVisible = false;
 
     this.isVisibleCards = false;
+
+    this.isPlaying=true;
   }
 
   update(dt) {

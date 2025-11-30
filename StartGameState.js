@@ -26,7 +26,7 @@ export class StartGameState extends State {
     this.game = game;
     this.done = false;
 
-    this.playerAmount = 5;
+    this.playerAmount = config.maxPlayers;
     this.spawnedPlayerIndex = 0;
   }
 

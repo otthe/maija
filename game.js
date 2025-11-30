@@ -36,6 +36,8 @@ export const config = {
   infoWidth: 384,
   infoHeight: 108,
   dealCardDelay: 1, //50
+  maxPlayers:5,
+  version: "0.0.1",
 }
 
 let cachedBackground = null;
@@ -351,7 +353,7 @@ document.addEventListener("DOMContentLoaded", async function() {
       //switch turn
       //gameData.turnPlayer = (gameData.turnPlayer + 1) % gameData.players.length;
       gameData.dealedBy = gameData.players[gameData.turnPlayer];
-      Maija.nextTurn(gameData);
+      gameData.turnPlayer = Maija.nextTurn(gameData);
     } else if (e.code === "KeyR") {
       resetGame();      
     }
@@ -376,7 +378,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     //players turn
     if (gameData.turnPlayer === 0) {
       const player = gameData.players[0];
-      const nextPlayer = gameData.players[(gameData.turnPlayer + 1) % gameData.players.length];
+      const nextPlayer = gameData.players[Maija.nextTurn(gameData)]; //gameData.players[(gameData.turnPlayer + 1) % gameData.players.length];
       const selectedCards = player.hand.filter((card) => card.selected);
       const mouseRect = {x:gameData.mouseX, y:gameData.mouseY, w:1, h:1};
 

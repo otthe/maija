@@ -49,8 +49,10 @@ function naiveBeat(rival,hand,separated,ctb, trumpSuit){
     const card = sameSuitCards[0];
     const cardKey = `${card.suit}-${card.rank}`;
 
-    Maija.discardPair(card, hand, rival, ctb);
-
+    // maybe it would be more efficient to just filter out the QS - whatever
+    if (!Maija.isQueenOfSpades(card)) {
+      Maija.discardPair(card, hand, rival, ctb);
+    }
     console.log(`${cardKey} beats ${rivalKey}`);
     return true;
   }
@@ -64,8 +66,12 @@ function naiveBeat(rival,hand,separated,ctb, trumpSuit){
   if (trumpCards.length > 0) {
     const card = trumpCards[0];
     const cardKey = `${card.suit}-${card.rank}`;
-;
-    Maija.discardPair(card, hand, rival, ctb);
+
+    // maybe it would be more efficient to just filter out the QS - whatever
+    if (!Maija.isQueenOfSpades(card)) {
+      Maija.discardPair(card, hand, rival, ctb);
+    }
+
     console.log(`TRUMP! ${cardKey} beats ${rivalKey}`);
     return true;
   }
@@ -108,10 +114,10 @@ function naiveDeal(hand) {
 
 export function botPlay(game) {
   const player=game.players[game.turnPlayer];
-  const nextPlayer=game.players[(game.turnPlayer + 1) % game.players.length];
+  const nextPlayer=game.players[Maija.nextTurn(game)]; //game.players[(game.turnPlayer + 1) % game.players.length];
   const hand=player.hand;
   const ctb=game.cardsToBeat;
-  const trumpSuit=game.trumpCard.suit;
+  const trumpSuit=game.trumpCard.suit || null; // this is only selected after first play turn
   const rivals = [...ctb].sort((a,b) => a.value - b.value);
   //try to beat
   if(ctb.length>0) {
@@ -127,6 +133,8 @@ export function botPlay(game) {
       naiveDeal(hand);
       const selectedCards = hand.filter((card) => card.selected);
       Maija.dealCards(game, player, nextPlayer, selectedCards);
+    } else {
+      eq.emit({type: "SEND_MESSAGE", msg: `${player} on ulkona!`});
     }
   }else {
     Maija.raiseCards(game, player, ctb);
