@@ -112,17 +112,17 @@ function naiveBeat(rival,hand,separated,ctb, trumpSuit){
 //   return hand;
 // }
 
-function naiveDeal(hand) {
+function naiveDeal(hand, nextPlayer) {
+  // const limit = Math.min(opponentCardCount, hand.length);
+  // if (limit <= 0) return;
+
   const separated=separateCardsBySuit(hand);
   const maxSuit = suitWithMostCards(separated);
-
-  const npc =2; //next player card amount
-  console.log(separated[maxSuit]);
 
   let selectedCards=[];
 
   let dealed=0;
-  while(dealed < npc && dealed < separated[maxSuit].length) {
+  while(dealed < nextPlayer.hand.length && dealed < separated[maxSuit].length) {
     selectedCards.push(separated[maxSuit][dealed]);
     dealed++;
   }
@@ -158,16 +158,21 @@ export function botPlay(game) {
   }
 
   if (ctb.length===0) {
-    // change later
+    //bot has no cards to beat so he can deal
     if (hand.length>0) {
-      naiveDeal(hand);
+      naiveDeal(hand, nextPlayer);
       const selectedCards = hand.filter((card) => card.selected);
       Maija.dealCards(game, player, nextPlayer, selectedCards);
     } else {
+      //bot has no cards so check if there is one's to draw - if no take him out of the game
       Maija.isOut(player, game);
-      eq.emit({type: "SEND_MESSAGE", msg: `${player} on ulkona!`});
+      if(!player.isPlaying) {
+        eq.emit({type: "SEND_MESSAGE", msg: `${player} on ulkona!`});
+      }
+      game.turnPlayer=Maija.nextTurn(game); //turn switch should happen every time
     }
   }else {
+    // bot could not beat all the cards so he has to raise the ones left
     Maija.raiseCards(game, player, ctb);
   }
 }

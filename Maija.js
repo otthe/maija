@@ -39,6 +39,8 @@ export const Maija = {
       }
     }
 
+    // check if player is out
+    this.isOut(player, game);
   },
 
   isQueenOfSpades(card) {
