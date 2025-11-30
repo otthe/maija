@@ -49,8 +49,9 @@ export const odex = new Odex(config.width, config.height);
 const sprites = [
   {name: "spritesheet", src: '/art/spritesheet.png'},
   {name: "players", src: '/art/players.png'},
-  {name: "background", src: '/art/background8.jpg'}, //background8.jpg
+  {name: "background", src: '/art/background.png'}, //background8.jpg
   {name: "player", src: '/art/player.png'},
+  {name: "bot", src: '/art/enemy.png'},
 ];
 const sounds = [];
 
@@ -267,7 +268,7 @@ function preprocessBackground() {
   buffer.width = config.width;  // 960
   buffer.height = config.height; // 540
   const bctx = buffer.getContext("2d");
-  bctx.imageSmoothingEnabled = true;
+  bctx.imageSmoothingEnabled = false;
   bctx.drawImage(bg, 0, 0, bg.width, bg.height, 0, 0, buffer.width, buffer.height);
   return buffer;
 }
@@ -298,10 +299,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     l.style.width = `${Math.floor(config.width * scale)}px`;
     l.style.height = `${Math.floor(config.height * scale)}px`;
 
-    layer.ctx.imageSmoothingEnabled = true;
-    layer.ctx.webkitImageSmoothingEnabled = true;
-    layer.ctx.mozImageSmoothingEnabled = true;
-    layer.ctx.msImageSmoothingEnabled = true;
+    layer.ctx.imageSmoothingEnabled = false;
+    layer.ctx.webkitImageSmoothingEnabled = false;
+    layer.ctx.mozImageSmoothingEnabled = false;
+    layer.ctx.msImageSmoothingEnabled = false;
   });
 
   odex.loop();

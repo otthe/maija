@@ -8,10 +8,10 @@
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 body {
-  background-color: #3a3232;
+  background-color: #bbbbbb;
 
-  background-color: #081b02;
-  background-image: url("https://www.transparenttextures.com/patterns/handmade-paper.png");
+  /* background-color: #081b02; */
+  /* background-image: url("https://www.transparenttextures.com/patterns/handmade-paper.png"); */
   /*background-image: url("handmade-paper.png");*/
 }
 
@@ -60,7 +60,8 @@ html, body {
 }
 
 canvas {
-  image-rendering: auto;
+  /* image-rendering: auto; */
+  image-rendering: pixelated;
   width: unset;
   height: unset;
 }

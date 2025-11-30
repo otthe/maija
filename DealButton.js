@@ -26,7 +26,7 @@ export default class DealButton {
       // this.layer.ctx.fillStyle = "brown";
       // this.layer.ctx.fillRect(this.x, this.y, this.w, this.h);
  
-      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 64, 48, 32, this.x, this.y, this.w, this.h);
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 112, 96, 64, this.x, this.y, this.w, this.h);
 
       this.layer.ctx.fillStyle = "#000";
       const selectedCards = player.hand.filter((card) => card.selected);

@@ -46,7 +46,8 @@ export class Card {
    
     if (this.isVisible) {
 
-      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 0, 48, 64, this.x, this.y, config.cardWidth, config.cardHeight);
+      //this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 0, 48, 64, this.x, this.y, config.cardWidth, config.cardHeight);
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 0, 64, 96, this.x, this.y, config.cardWidth, config.cardHeight);
 
       this.layer.ctx.fillStyle = "#000";
       this.layer.ctx.fillText(this.suit, this.x, this.y+16);
@@ -67,7 +68,7 @@ export class Card {
 
       // this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 48, 0, 48, 64, bx, by, config.cardWidth, config.cardHeight);
 
-      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 48, 0, 48, 64, bx, by, 48, 64);
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 64, 0, 64, 96, bx, by, 64, 96);
 
       // this.layer.ctx.fillStyle = "#000";
       // this.layer.ctx.fillText(this.suit, bx, by+16);

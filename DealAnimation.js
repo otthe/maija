@@ -51,7 +51,9 @@ export class DealAnimation {
     // this.layer.ctx.fillRect(-config.cardWidth / 2, -config.cardHeight / 2, config.cardWidth, config.cardHeight);
 
 
-    this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 48, 0, 48, 64, -config.cardWidth / 2, -config.cardHeight / 2, config.cardWidth, config.cardHeight);
+    // this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 48, 0, 48, 64, -config.cardWidth / 2, -config.cardHeight / 2, config.cardWidth, config.cardHeight);
+
+    this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 64, 0, 64, 96, -config.cardWidth / 2, -config.cardHeight / 2, config.cardWidth, config.cardHeight);
 
 
     this.layer.ctx.restore();

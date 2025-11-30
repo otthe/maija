@@ -1,6 +1,7 @@
 import { botPlay } from "./BotPlay.js";
 import { EvaluatePlayState } from "./EvaluatePlayState.js";
 import { eq, config, odex } from "./game.js";
+import { GameOverState } from "./GameOverState.js";
 import { Maija } from "./Maija.js";
 import { State } from "./State.js";
 import { Util } from "./Util.js";
@@ -49,7 +50,13 @@ export class PlayTurnState extends State {
   }
 
   nextState() {
-    return new PlayTurnState(this.game, this.game.turnPlayer);
+    //when one player is left, return game over state
+    if (this.game.winOrder.length >= config.maxPlayers-1) {
+      return new GameOverState(this.game);
+    } else {
+      return new PlayTurnState(this.game, this.game.turnPlayer);
+    }
+
     //return new EvaluatePlayState(this.game);
   }
 

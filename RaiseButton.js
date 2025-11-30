@@ -26,7 +26,7 @@ export default class RaiseButton {
       // this.layer.ctx.fillStyle = "brown";
       
       // this.layer.ctx.fillRect(this.x, this.y, this.w, this.h);
-      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 48, 64, 48, 32, this.x, this.y, this.w, this.h);
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 96, 112, 96, 64, this.x, this.y, this.w, this.h);
 
       this.layer.ctx.fillStyle = "#000";
       this.layer.ctx.fillText(`Nosta ${this.game.cardsToBeat.length} korttia`,this.x, this.y+(this.h/2));

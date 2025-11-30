@@ -16,7 +16,7 @@ export class Deck {
     if (this.game.trumpCardPicked && this.game.deck.length > 0) {
       //this.layer.ctx.fillStyle = "#fff";
       //this.layer.ctx.fillRect(this.x-(config.cardWidth/2)-16, this.y-(config.cardHeight/2)-64, config.cardWidth, config.cardHeight);
-      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 0, 48, 64, this.x-(config.cardWidth/2)-16, this.y-(config.cardHeight/2)-64, config.cardWidth, config.cardHeight);
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 0, 0, 64, 96, this.x-(config.cardWidth/2)-16, this.y-(config.cardHeight/2)-64, config.cardWidth, config.cardHeight);
       this.layer.ctx.fillStyle = "#000";
       const lastCard = this.game.deck[this.game.deck.length-1];
       const str = `${lastCard.suit} - ${lastCard.value}`;
@@ -27,8 +27,11 @@ export class Deck {
       //this.layer.ctx.fillStyle = "red";
       //this.layer.ctx.fillRect(this.x-(config.cardWidth/2), this.y-(config.cardHeight/2), config.cardWidth, config.cardHeight);
 
-      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 48, 0, 48, 64, this.x-(config.cardWidth/2), this.y-(config.cardHeight/2), config.cardWidth, config.cardHeight);
-  
+      // this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 48, 0, 48, 64, this.x-(config.cardWidth/2), this.y-(config.cardHeight/2), config.cardWidth, config.cardHeight);
+
+      this.layer.ctx.drawImage(odex.getSprite("spritesheet"), 64, 0, 64, 96, this.x-(config.cardWidth/2), this.y-(config.cardHeight/2), config.cardWidth, config.cardHeight);
+
+
       this.layer.ctx.fillStyle = "#000";
       this.layer.ctx.fillText(`${this.game.deck.length} cards`,this.x-(config.cardWidth/2), this.y-(config.cardHeight/2)+32 );
       // for (let i  =0; i < this.game.deck.length; i++) {

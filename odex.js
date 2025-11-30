@@ -313,9 +313,9 @@ export default class Odex {
 
     const ctx = target.getContext('2d'); // { willReadFrequently: false }
     //ctx.imageSmoothingEnabled = false;
-    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingEnabled = false;
 
-    //ctx.scale(dpr, dpr);
+    ctx.scale(dpr, dpr);
 
     this.G.layers.push({
       layer: target,

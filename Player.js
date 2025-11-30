@@ -102,13 +102,11 @@ export default class Player {
     
     if (this.type === "player") {
       // this.layer.ctx.drawImage(odex.getSprite("players"), 0, 0, 96, 128, this.x, this.y, config.slotWidth, config.slotHeight);
-      this.layer.ctx.drawImage(odex.getSprite("player"), 0, 0, 384, 512, this.x, this.y, config.slotWidth, config.slotHeight);
+      this.layer.ctx.drawImage(odex.getSprite("player"), this.x, this.y, config.slotWidth, config.slotHeight);
     } else {
       // this.layer.ctx.drawImage(odex.getSprite("players"), 96, 0, 96, 128, this.x, this.y, config.slotWidth, config.slotHeight);
-      this.layer.ctx.drawImage(odex.getSprite("player"), 0, 0, 384, 512, this.x, this.y, config.slotWidth, config.slotHeight);
+      this.layer.ctx.drawImage(odex.getSprite("bot"), this.x, this.y, config.slotWidth, config.slotHeight);
     }
-
-
 
     if (this.game.turnPlayer===this.position) {
       this.layer.ctx.fillStyle ="orange";
